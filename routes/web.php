@@ -17,4 +17,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/load-content', function () {
+    return '<p class="text-green-500">This is dynamically loaded content using HTMX!</p>';
+});
+
 require __DIR__.'/auth.php';

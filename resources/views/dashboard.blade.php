@@ -12,6 +12,18 @@
                     {{ __("You're logged in!") }}
                 </div>
             </div>
+
+            <div id="dynamic-content" class="p-4">
+                <button
+                    hx-get="/load-content"
+                    hx-target="#dynamic-content"
+                    class="bg-blue-500 text-white px-4 py-2 rounded">
+                    Load Content
+                </button>
+            </div>
         </div>
     </div>
+
+
+
 </x-app-layout>
