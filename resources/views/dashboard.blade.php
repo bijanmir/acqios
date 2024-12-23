@@ -6,9 +6,18 @@
     </x-slot>
 
     <div class="max-w-7xl mx-auto p-6 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Your Listings</h1>
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold">Your Listings</h1>
+            <a
+                href="{{ route('listings.create') }}"
+                class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"
+            >
+                Create New Listing
+            </a>
+        </div>
 
-        @if ($listings->isEmpty())
+
+    @if ($listings->isEmpty())
             <div class="flex items-center justify-center h-64 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
                 <p class="text-lg text-gray-500 dark:text-gray-400">
                     You don't have any listings yet.
