@@ -25,6 +25,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/listings/create', [ListingsController::class, 'create'])->name('listings.create');
     Route::post('/listings', [ListingsController::class, 'store'])->name('listings.store');
+    Route::get('/listings/{id}', [ListingsController::class, 'show'])->name('listings.show');
+
 });
 
 require __DIR__.'/auth.php';

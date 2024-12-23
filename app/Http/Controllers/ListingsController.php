@@ -27,4 +27,11 @@ class ListingsController extends Controller
 
         return redirect()->route('dashboard')->with('success', 'Listing created successfully!');
     }
+
+    public function show($id)
+    {
+        $listing = Listing::findOrFail($id); // Fetch the listing by ID
+        return view('listings.show', compact('listing')); // Pass the listing to the view
+    }
+
 }

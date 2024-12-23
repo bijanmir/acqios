@@ -14,24 +14,22 @@
                     @foreach ($listings as $listing)
                         <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 hover:shadow-lg transition">
                             <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200">
-                                {{ $listing->title }}
+                                <a href="{{ route('listings.show', $listing->id) }}" class="hover:underline">
+                                    {{ $listing->title }}
+                                </a>
                             </h3>
                             <p class="text-gray-600 dark:text-gray-400 mt-2">
-                                {{ $listing->description }}
+                                {{ Str::limit($listing->description, 100) }}
                             </p>
                             <p class="text-sm text-gray-500 dark:text-gray-500 mt-4">
                                 Created on: {{ $listing->created_at->format('M d, Y') }}
                             </p>
                         </div>
                     @endforeach
+
                 </div>
             @endif
         </div>
     </div>
 
-    <footer class="py-4 bg-gray-100 dark:bg-gray-800 text-center">
-        <p class="text-sm text-gray-600 dark:text-gray-300">
-            &copy; {{ date('Y') }} Acqios. All rights reserved.
-        </p>
-    </footer>
 </x-app-layout>
