@@ -16,6 +16,7 @@ class Listing extends Model
         'title',
         'description',
         'user_id',
+        'images'
     ];
 
     /**

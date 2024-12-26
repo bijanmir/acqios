@@ -1,25 +1,45 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 text-center">
-            {{ $listing->title }}
-        </h2>
-        @auth
-            <div class="dark:text-white">
-                <p>You are logged in as {{ auth()->user()->id }}</p>
-                <p>Listing Owner ID: {{ $listing->user_id }}</p>
-
+        <div class="flex justify-between items-center">
+            <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200">
+                {{ $listing->title }}
+            </h2>
+            @auth
                 @if(auth()->user()->id === $listing->user_id)
-                    <p>You own this listing!</p>
+                    <a href="{{ route('listings.edit', $listing) }}"
+                       class="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        Edit Listing
+                    </a>
                 @else
-                    <p>You do not own this listing.</p>
+                    <a href="#"
+                       class="ml-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                        Message Listing Owner
+                    </a>
                 @endif
-            </div>
-        @endauth
+            @else
+                <a href="{{ route('login') }}"
+                   class="ml-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                    Login to Contact Owner
+                </a>
+            @endauth
+        </div>
     </x-slot>
 
-    <div class="py-8">
-        <div class="container mx-auto max-w-3xl">
-            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+    <div class="py-8 max-w-7xl mx-auto">
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <!-- Scrollable Image Section -->
+            @if($listing->images)
+                <div class="mb-6">
+                    <div class="flex overflow-x-auto space-x-4 pb-4">
+                        @foreach(json_decode($listing->images, true) as $image)
+                            <img src="{{ $image }}" alt="Listing Image" class="h-52 object-cover rounded">
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            <!-- Listing Details -->
+            <div class="mt-4">
                 <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">
                     {{ $listing->title }}
                 </h3>
@@ -29,15 +49,6 @@
                 <p class="text-sm text-gray-500 dark:text-gray-500">
                     Created on: {{ $listing->created_at->format('M d, Y') }}
                 </p>
-
-                <!-- Edit Button -->
-                @can('update', $listing)
-                    <div class="mt-6">
-                        <a href="{{ route('listings.edit', $listing) }}" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                            Edit Listing
-                        </a>
-                    </div>
-                @endcan
             </div>
         </div>
     </div>

@@ -16,29 +16,39 @@
             </a>
         </div>
 
-
-    @if ($listings->isEmpty())
+        @if ($listings->isEmpty())
             <div class="flex items-center justify-center h-64 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
                 <p class="text-lg text-gray-500 dark:text-gray-400">
                     You don't have any listings yet.
-                    <a href="#" class="text-blue-500 hover:underline dark:text-blue-400">Create one now!</a>
+                    <a href="{{ route('listings.create') }}" class="text-blue-500 hover:underline dark:text-blue-400">Create one now!</a>
                 </p>
             </div>
         @else
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($listings as $listing)
-                    <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
-                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                            {{ $listing->title }}
-                        </h2>
-                        <p class="text-gray-600 dark:text-gray-400 mb-4">
-                            {{ Str::limit($listing->description, 100) }}
-                        </p>
-                        <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-                            <span>Created: {{ $listing->created_at->format('M d, Y') }}</span>
-                            <a href="#" class="text-blue-500 hover:underline dark:text-blue-400">View Details</a>
+                    <a href="{{ route('listings.show', $listing->id) }}" class="text-decoration-none">
+                        <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
+                            <!-- Image Section -->
+                            <div class="mb-4">
+                                @php
+                                    $images = json_decode($listing->images, true) ?: [];
+                                    $imageUrl = $images[0] ?? 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'; // Placeholder image URL
+                                @endphp
+                                <img src="{{ $imageUrl }}" alt="{{ $listing->title }}" class="w-full h-48 object-cover rounded">
+                            </div>
+
+                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                                {{ $listing->title }}
+                            </h2>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                {{ Str::limit($listing->description, 100) }}
+                            </p>
+                            <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+                                <span>Created: {{ $listing->created_at->format('M d, Y') }}</span>
+                                <span class="text-blue-500 hover:underline dark:text-blue-400">View Details</span>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 @endforeach
             </div>
         @endif

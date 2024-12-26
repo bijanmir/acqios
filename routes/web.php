@@ -26,7 +26,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/listings/create', [ListingsController::class, 'create'])->name('listings.create');
     Route::post('/listings', [ListingsController::class, 'store'])->name('listings.store');
     Route::get('/listings/{id}', [ListingsController::class, 'show'])->name('listings.show');
-
+    Route::delete('/listings/{listing}', [ListingsController::class, 'destroy'])->name('listings.destroy');
 
 
     Route::put('/listings/{listing}', [ListingsController::class, 'update'])->name('listings.update')->middleware('auth');
@@ -37,6 +37,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/listings/{listing}/edit', [ListingsController::class, 'edit'])->name('listings.edit');
 });
+
+
 
 
 

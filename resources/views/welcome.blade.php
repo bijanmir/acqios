@@ -12,24 +12,43 @@
             @else
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach ($listings as $listing)
-                        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 hover:shadow-lg transition">
-                            <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200">
-                                <a href="{{ route('listings.show', $listing->id) }}" class="hover:underline">
-                                    {{ $listing->title }}
-                                </a>
-                            </h3>
-                            <p class="text-gray-600 dark:text-gray-400 mt-2">
-                                {{ Str::limit($listing->description, 100) }}
-                            </p>
-                            <p class="text-sm text-gray-500 dark:text-gray-500 mt-4">
-                                Created on: {{ $listing->created_at->format('M d, Y') }}
-                            </p>
-                        </div>
-                    @endforeach
+                        <a href="{{ route('listings.show', $listing->id) }}" class="text-decoration-none">
+                            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 hover:shadow-lg transition cursor-pointer" style="position: relative;">
+                                <!-- Image Section -->
+                                <div class="mb-4">
+                                    @php
+                                        $images = json_decode($listing->images, true) ?: [];
+                                        $imageUrl = $images[0] ?? 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'; // Placeholder image URL
+                                    @endphp
+                                    <img src="{{ $imageUrl }}" alt="{{ $listing->title }}" class="w-full h-64 object-cover rounded">
+                                </div>
 
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200">
+                                    {{ $listing->title }}
+                                </h3>
+                                <p class="text-gray-600 dark:text-gray-400 mt-2">
+                                    {{ Str::limit($listing->description, 100) }}
+                                </p>
+                                <p class="text-sm text-gray-500 dark:text-gray-500 mt-4">
+                                    Created on: {{ $listing->created_at->format('M d, Y') }}
+                                </p>
+                                <!-- This pseudo-element makes the whole card clickable -->
+                                <style>
+                                    .card-link::after {
+                                        content: '';
+                                        position: absolute;
+                                        top: 0;
+                                        left: 0;
+                                        bottom: 0;
+                                        right: 0;
+                                        pointer-events: auto;
+                                    }
+                                </style>
+                            </div>
+                        </a>
+                    @endforeach
                 </div>
             @endif
         </div>
     </div>
-
 </x-app-layout>
