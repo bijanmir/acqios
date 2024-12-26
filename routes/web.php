@@ -27,6 +27,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/listings', [ListingsController::class, 'store'])->name('listings.store');
     Route::get('/listings/{id}', [ListingsController::class, 'show'])->name('listings.show');
 
+
+
+    Route::put('/listings/{listing}', [ListingsController::class, 'update'])->name('listings.update')->middleware('auth');
+
 });
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/listings/{listing}/edit', [ListingsController::class, 'edit'])->name('listings.edit');
+});
+
+
 
 require __DIR__.'/auth.php';
