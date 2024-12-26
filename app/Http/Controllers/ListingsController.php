@@ -97,6 +97,7 @@ class ListingsController extends Controller
                 $images[] = Storage::url($path);
             }
         }
+        // Ensure we update with all images, existing and new
         $validated['images'] = json_encode($images);
 
         $listing->update($validated);

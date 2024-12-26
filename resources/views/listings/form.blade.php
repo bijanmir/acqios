@@ -13,19 +13,28 @@
                     @method('PUT')
                 @endif
 
+                <!-- Hidden Input for Deleted Images -->
+                <input type="hidden" name="delete_images" id="delete_images" value="[]">
+
                 <!-- Scrollable Image Section -->
-                @if(isset($listing) && $listing->images)
-                    <div class="mb-6">
-                        <div class="flex overflow-x-auto space-x-4 pb-4">
+                <div id="imagePreview" class="mb-6">
+                    <div class="flex overflow-x-auto space-x-4 pb-4">
+                        @if(isset($listing) && $listing->images)
                             @foreach(json_decode($listing->images, true) as $image)
                                 <div class="relative">
                                     <img src="{{ $image }}" alt="Listing Image" class="h-52 object-cover rounded">
                                     <button type="button" onclick="confirmDeleteImage('{{ $image }}')" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">X</button>
                                 </div>
                             @endforeach
-                        </div>
+                        @endif
+                        <label for="images" class="flex items-center justify-center h-52 w-52 bg-gray-200 dark:bg-gray-700 rounded cursor-pointer">
+                            <svg class="w-10 h-10 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            <input type="file" id="images" name="images[]" multiple class="hidden" accept="image/*" onchange="previewImages(event)">
+                        </label>
                     </div>
-                @endif
+                </div>
 
                 <!-- Form Fields -->
                 <div class="mt-4">
@@ -39,11 +48,6 @@
                         <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Description</label>
                         <textarea name="description" id="description" rows="4" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                                   required>{{ old('description', $listing->description ?? '') }}</textarea>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="images" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Images</label>
-                        <input type="file" id="images" name="images[]" multiple class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500" accept="image/*">
                     </div>
                 </div>
 
@@ -62,8 +66,45 @@
         </div>
     </div>
 
-    <!-- JavaScript for handling image and listing deletion -->
+    <!-- JavaScript for handling image preview, deletion, and listing deletion -->
     <script>
+        function previewImages(event) {
+            const imagePreview = document.getElementById('imagePreview').firstElementChild;
+            const files = event.target.files;
+
+            // Preview each selected image and insert before the plus button
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.alt = 'Selected Image';
+                        img.className = 'h-52 object-cover rounded';
+
+                        const div = document.createElement('div');
+                        div.className = 'relative';
+                        div.appendChild(img);
+
+                        // Add delete button functionality for preview images
+                        const deleteButton = document.createElement('button');
+                        deleteButton.type = 'button';
+                        deleteButton.className = 'absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs';
+                        deleteButton.textContent = 'X';
+                        deleteButton.onclick = function() {
+                            div.remove();
+                        };
+                        div.appendChild(deleteButton);
+
+                        // Insert the new preview image before the plus button
+                        imagePreview.insertBefore(div, imagePreview.lastElementChild);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+
         function confirmDeleteImage(imageUrl) {
             if (confirm('Are you sure you want to remove this image?')) {
                 let deleteImages = JSON.parse(document.getElementById('delete_images').value);
