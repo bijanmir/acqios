@@ -49,6 +49,37 @@
                         <textarea name="description" id="description" rows="4" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                                   required>{{ old('description', $listing->description ?? '') }}</textarea>
                     </div>
+
+                    <!-- Address Fields -->
+                    <div class="mb-4">
+                        <label for="street" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Street</label>
+                        <input type="text" name="street" id="street" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                               value="{{ old('street', $listing->address->street ?? '') }}" placeholder="Enter the street">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-200">City</label>
+                        <input type="text" name="city" id="city" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                               value="{{ old('city', $listing->address->city ?? '') }}" placeholder="Enter the city">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="state" class="block text-sm font-medium text-gray-700 dark:text-gray-200">State</label>
+                        <input type="text" name="state" id="state" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                               value="{{ old('state', $listing->address->state ?? '') }}" placeholder="Enter the state">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="zip_code" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Zip Code</label>
+                        <input type="text" name="zip_code" id="zip_code" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                               value="{{ old('zip_code', $listing->address->zip_code ?? '') }}" placeholder="Enter the zip code">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="country" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Country</label>
+                        <input type="text" name="country" id="country" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                               value="{{ old('country', $listing->address->country ?? 'USA') }}" placeholder="Enter the country">
+                    </div>
                 </div>
 
                 <!-- Form Actions -->

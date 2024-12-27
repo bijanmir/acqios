@@ -22,35 +22,63 @@ class ListingsController extends Controller
         ]);
     }
 
-
     public function store(Request $request)
     {
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
+            'street' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'zip_code' => 'nullable|string|max:10',
+            'country' => 'nullable|string|max:255',
             'images' => 'array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $listing = new Listing();
-        $listing->title = $request->title;
-        $listing->description = $request->description;
+        $listing = Listing::create($request->only(['title', 'description']));
         $listing->user_id = auth()->id();
-
-        // Handle image uploads
-        $images = [];
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('listings', 'public');
-                $images[] = Storage::url($path);
-            }
-        }
-        $listing->images = json_encode($images);
-
         $listing->save();
+
+        $listing->address()->create($request->only(['street', 'city', 'state', 'zip_code', 'country']));
 
         return redirect()->route('dashboard')->with('success', 'Listing created successfully!');
     }
+
+    public function update(Request $request, Listing $listing)
+    {
+        $this->authorize('update', $listing);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'images' => 'array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'street' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'zip_code' => 'nullable|string|max:10',
+            'country' => 'nullable|string|max:255',
+        ]);
+
+        $listing->update($validated);
+
+        // Check if at least one address field is provided
+        $addressFields = $request->only(['street', 'city', 'state', 'zip_code', 'country']);
+        $hasAddressData = array_filter($addressFields); // Remove empty fields
+
+        if (!empty($hasAddressData)) {
+            // Update or create address with the provided fields
+            $listing->address()->updateOrCreate([], $addressFields);
+        } else {
+            // If no valid address fields, delete the address if it exists
+            $listing->address()->delete();
+        }
+
+        return redirect()->route('listings.show', $listing)->with('success', 'Listing updated successfully!');
+    }
+
+
 
     public function show($id)
     {
@@ -67,42 +95,6 @@ class ListingsController extends Controller
             'action' => route('listings.update', $listing),
             'method' => 'PUT',
         ]);
-    }
-
-
-    public function update(Request $request, Listing $listing)
-    {
-        $this->authorize('update', $listing);
-
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'images' => 'array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        // Handle existing images deletion if needed
-        if ($request->has('delete_images')) {
-            $deleteImages = json_decode($request->input('delete_images'), true);
-            $currentImages = json_decode($listing->images, true) ?: [];
-            $listing->images = json_encode(array_diff($currentImages, $deleteImages));
-            $listing->save();
-        }
-
-        // Handle new image uploads
-        $images = json_decode($listing->images, true) ?: [];
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('listings', 'public');
-                $images[] = Storage::url($path);
-            }
-        }
-        // Ensure we update with all images, existing and new
-        $validated['images'] = json_encode($images);
-
-        $listing->update($validated);
-
-        return redirect()->route('listings.show', $listing)->with('success', 'Listing updated successfully!');
     }
 
 
