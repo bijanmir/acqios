@@ -19,6 +19,13 @@ class Listing extends Model
         'images'
     ];
 
+    protected $casts = [
+        'images' => 'array',
+    ];
+
+    protected $guarded = ['id'];
+
+
     /**
      * The data type of the primary key.
      */

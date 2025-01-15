@@ -36,11 +36,26 @@ class ListingsController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $listing = Listing::create($request->only(['title', 'description']));
+        $listing = Listing::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'user_id' => auth()->id(),
+        ]);
         $listing->user_id = auth()->id();
         $listing->save();
 
         $listing->address()->create($request->only(['street', 'city', 'state', 'zip_code', 'country']));
+
+
+        $images = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('listings', 'public');
+                $images[] = Storage::url($path);
+            }
+        }
+        $listing->images = json_encode($images);
+        $listing->save();
 
         return redirect()->route('dashboard')->with('success', 'Listing created successfully!');
     }
