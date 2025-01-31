@@ -11,8 +11,9 @@ Route::middleware(['auth', 'verified'])->get('/dashboard', function () {
 
 Route::get('/', function () {
     $listings = Listing::latest()->get(); // Fetch all listings sorted by the latest
-    return view('landing', compact('listings'));
+    return view('landing');
 })->name('home');
+
 
 Route::get('/dashboard', function () {
     $listings = auth()->user()->listings; // Fetch user's listings
@@ -27,12 +28,11 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/listings', [ListingsController::class, 'index'])->name('listings.index');
     Route::get('/listings/create', [ListingsController::class, 'create'])->name('listings.create');
     Route::post('/listings', [ListingsController::class, 'store'])->name('listings.store');
     Route::get('/listings/{id}', [ListingsController::class, 'show'])->name('listings.show');
     Route::delete('/listings/{listing}', [ListingsController::class, 'destroy'])->name('listings.destroy');
-
-
     Route::put('/listings/{listing}', [ListingsController::class, 'update'])->name('listings.update')->middleware('auth');
 
 });

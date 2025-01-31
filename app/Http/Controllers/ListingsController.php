@@ -216,4 +216,9 @@ class ListingsController extends Controller
         // Redirect to dashboard with success message
         return redirect()->route('dashboard')->with('success', 'Listing deleted successfully!');
     }
+
+    public function index(){
+        $listings = Listing::all();
+        return view('listings.index', compact('listings'));
+    }
 }
