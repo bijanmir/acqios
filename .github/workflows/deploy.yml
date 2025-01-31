@@ -11,17 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up SSH agent and add the private key
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.4
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # Step 3: Deploy code and run necessary commands via SSH
       - name: Deploy code via SSH
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_IP }} "
@@ -37,4 +34,5 @@ jobs:
             php artisan route:clear
             php artisan route:cache
             php artisan view:clear
-            php artisan view:cache"
+            php artisan view:cache
+            echo \"$(date '+%b %d, %Y %H:%M %p')\" > storage/logs/last_updated.log"

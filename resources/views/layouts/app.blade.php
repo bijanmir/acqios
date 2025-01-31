@@ -38,11 +38,15 @@
             &copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.
         </p>
         <p class="text-xs text-gray-500 dark:text-gray-400">
-            Last Updated: {{ \Illuminate\Support\Facades\Cache::remember('last_commit', 3600, function () {
-            return trim(exec('git log -1 --format=%cd --date=format:"%b %d, %Y %H:%M %p"'));
-        }) }}
+            Last Updated:
+            @php
+                $lastUpdatedFile = storage_path('logs/last_updated.log');
+                echo file_exists($lastUpdatedFile) ? file_get_contents($lastUpdatedFile) : 'Not Available';
+            @endphp
         </p>
     </footer>
+
+
 
 </div>
 </body>
