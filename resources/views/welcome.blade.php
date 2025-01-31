@@ -17,10 +17,14 @@
                                 <!-- Image Section -->
                                 <div class="mb-4">
                                     @php
-                                        $images = json_decode($listing->images, true) ?: [];
-                                        $imageUrl = $images[0] ?? 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'; // Placeholder image URL
+                                        // Decode images to ensure it's an array
+                                        $images = is_array($listing->images) ? $listing->images : json_decode($listing->images, true);
+                                        $images = array_filter($images, fn($img) => file_exists(public_path(str_replace('/storage/', 'storage/', $img))));
+                                        $firstImage = !empty($images) ? asset(reset($images)) : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png';
                                     @endphp
-                                    <img src="{{ $imageUrl }}" alt="{{ $listing->title }}" class="w-full h-64 object-cover rounded">
+
+                                    <img src="{{ $firstImage }}" alt="{{ $listing->title }}" class="w-full h-64 object-cover rounded">
+
                                 </div>
 
                                 <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200">

@@ -37,7 +37,6 @@ class ListingsPolicy
      */
     public function update(User $user, Listing $listing): bool
     {
-        Log::log('info', 'Listing Policy Update Hit');
         return $user->id === $listing->user_id;
     }
 

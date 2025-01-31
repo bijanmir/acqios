@@ -12,22 +12,28 @@
                 @if (isset($method) && $method === 'PUT')
                     @method('PUT')
                 @endif
-
                 <!-- Hidden Input for Deleted Images -->
                 <input type="hidden" name="delete_images" id="delete_images" value="[]">
 
-                <!-- Scrollable Image Section -->
+                <!-- Image Preview Section -->
                 <div id="imagePreview" class="mb-6">
-                    <div class="flex overflow-x-auto space-x-4 pb-4">
-                        @if(isset($listing) && $listing->images)
-                            @foreach(json_decode($listing->images, true) as $image)
-                                <div class="relative">
-                                    <img src="{{ $image }}" alt="Listing Image" class="h-52 object-cover rounded">
-                                    <button type="button" onclick="confirmDeleteImage('{{ $image }}')" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">X</button>
+                    <h4 class="text-lg font-semibold">Current Images</h4>
+                    <div id="image-display-carousel" class="flex overflow-x-auto space-x-4 pb-4">
+                        @if(isset($listing) && !empty($listing->images))
+                            @php
+                                $images = is_array($listing->images) ? $listing->images : json_decode($listing->images, true);
+                                $images = is_array($images) ? $images : [];
+                            @endphp
+                            @foreach($images as $image)
+                                <div class="relative image-container">
+                                    <img src="{{ asset($image) }}" alt="Listing Image" class="w-52 h-52 object-cover rounded-lg shadow-md">
+                                    <button type="button" class="absolute top-0 right-0 bg-red-500 text-white p-1 px-2 rounded-full delete-image-button"
+                                            data-image="{{ $image }}">✕</button>
                                 </div>
                             @endforeach
                         @endif
-                        <label for="images" class="flex items-center justify-center h-52 w-52 bg-gray-200 dark:bg-gray-700 rounded cursor-pointer">
+                        <!-- Upload New Images -->
+                        <label for="images" class="flex items-center justify-center h-52 w-52 bg-gray-200 dark:bg-gray-700 rounded cursor-pointer upload-image-button">
                             <svg class="w-10 h-10 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
@@ -36,59 +42,22 @@
                     </div>
                 </div>
 
-                <!-- Form Fields -->
-                <div class="mt-4">
-                    <div class="mb-4">
-                        <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Title</label>
-                        <input type="text" name="title" id="title" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                               value="{{ old('title', $listing->title ?? '') }}" required>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Description</label>
-                        <textarea name="description" id="description" rows="4" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                                  required>{{ old('description', $listing->description ?? '') }}</textarea>
-                    </div>
-
-                    <!-- Address Fields -->
-                    <div class="mb-4">
-                        <label for="street" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Street</label>
-                        <input type="text" name="street" id="street" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                               value="{{ old('street', $listing->address->street ?? '') }}" placeholder="Enter the street">
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-200">City</label>
-                        <input type="text" name="city" id="city" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                               value="{{ old('city', $listing->address->city ?? '') }}" placeholder="Enter the city">
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="state" class="block text-sm font-medium text-gray-700 dark:text-gray-200">State</label>
-                        <input type="text" name="state" id="state" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                               value="{{ old('state', $listing->address->state ?? '') }}" placeholder="Enter the state">
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="zip_code" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Zip Code</label>
-                        <input type="text" name="zip_code" id="zip_code" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                               value="{{ old('zip_code', $listing->address->zip_code ?? '') }}" placeholder="Enter the zip code">
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="country" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Country</label>
-                        <input type="text" name="country" id="country" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                               value="{{ old('country', $listing->address->country ?? 'USA') }}" placeholder="Enter the country">
-                    </div>
+                <!-- Title -->
+                <div class="mb-4">
+                    <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Title</label>
+                    <input type="text" name="title" id="title" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                           value="{{ old('title', $listing->title ?? '') }}" required>
                 </div>
 
-                <!-- Form Actions -->
-                <div class="flex justify-between mt-6">
-                    @if(isset($listing))
-                        <a href="#" onclick="confirmDeleteListing('{{ route('listings.destroy', $listing->id) }}')" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
-                            Delete Listing
-                        </a>
-                    @endif
+                <!-- Description -->
+                <div class="mb-4">
+                    <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Description</label>
+                    <textarea name="description" id="description" rows="4" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                              required>{{ old('description', $listing->description ?? '') }}</textarea>
+                </div>
+
+                <!-- Submit -->
+                <div class="flex justify-end">
                     <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
                         {{ isset($listing) ? 'Update Listing' : 'Create Listing' }}
                     </button>
@@ -97,64 +66,65 @@
         </div>
     </div>
 
-    <!-- JavaScript for handling image preview, deletion, and listing deletion -->
+    <!-- JavaScript for Handling Image Deletion & Preview -->
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let deleteImagesInput = document.getElementById("delete_images");
+            let deleteImagesArray = [];
+
+            document.querySelectorAll(".delete-image-button").forEach(button => {
+                button.addEventListener("click", function () {
+                    let imageUrl = this.dataset.image;
+                    deleteImagesArray.push(imageUrl);
+                    deleteImagesInput.value = JSON.stringify(deleteImagesArray);
+
+                    // Remove the image from preview
+                    this.closest(".image-container").remove();
+                });
+            });
+        });
+
         function previewImages(event) {
-            const imagePreview = document.getElementById('imagePreview').firstElementChild;
+            const imageCarousel = document.getElementById('image-display-carousel');
+            const uploadButton = document.querySelector('.upload-image-button'); // The upload button container
             const files = event.target.files;
 
-            // Preview each selected image and insert before the plus button
+            if (!files.length) return; // Stop if no files are selected
+
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
+
                 if (file.type.startsWith('image/')) {
                     const reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = function (e) {
+                        const div = document.createElement('div');
+                        div.className = 'relative image-container';
+
                         const img = document.createElement('img');
                         img.src = e.target.result;
-                        img.alt = 'Selected Image';
-                        img.className = 'h-52 object-cover rounded';
+                        img.className = 'w-52 h-52 object-cover rounded-lg shadow-md';
 
-                        const div = document.createElement('div');
-                        div.className = 'relative';
-                        div.appendChild(img);
-
-                        // Add delete button functionality for preview images
                         const deleteButton = document.createElement('button');
                         deleteButton.type = 'button';
-                        deleteButton.className = 'absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs';
-                        deleteButton.textContent = 'X';
-                        deleteButton.onclick = function() {
+                        deleteButton.className = 'absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full delete-image-button';
+                        deleteButton.textContent = '✕';
+
+                        deleteButton.onclick = function () {
                             div.remove();
                         };
+
+                        div.appendChild(img);
                         div.appendChild(deleteButton);
 
-                        // Insert the new preview image before the plus button
-                        imagePreview.insertBefore(div, imagePreview.lastElementChild);
+                        // **Insert the preview BEFORE the upload button**
+                        imageCarousel.insertBefore(div, uploadButton);
                     };
+
                     reader.readAsDataURL(file);
                 }
             }
         }
 
-        function confirmDeleteImage(imageUrl) {
-            if (confirm('Are you sure you want to remove this image?')) {
-                let deleteImages = JSON.parse(document.getElementById('delete_images').value);
-                deleteImages.push(imageUrl);
-                document.getElementById('delete_images').value = JSON.stringify(deleteImages);
-                // Visually remove the image from the DOM for immediate feedback
-                document.querySelector(`img[src="${imageUrl}"]`).closest('div').remove();
-            }
-        }
 
-        function confirmDeleteListing(url) {
-            if (confirm('Are you sure you want to delete this listing? This action cannot be undone.')) {
-                let form = document.createElement('form');
-                form.method = 'POST';
-                form.action = url;
-                document.body.appendChild(form);
-                form.innerHTML = '@csrf @method("DELETE")';
-                form.submit();
-            }
-        }
     </script>
 </x-app-layout>

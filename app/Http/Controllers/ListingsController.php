@@ -27,57 +27,91 @@ class ListingsController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
-            'street' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:255',
-            'state' => 'nullable|string|max:255',
-            'zip_code' => 'nullable|string|max:10',
-            'country' => 'nullable|string|max:255',
             'images' => 'array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $listing = Listing::create($request->only(['title', 'description']));
-        $listing->user_id = auth()->id();
-        $listing->save();
+        $listing = Listing::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'user_id' => auth()->id(),
+        ]);
 
-        $listing->address()->create($request->only(['street', 'city', 'state', 'zip_code', 'country']));
+        // Handle image uploads properly
+        if ($request->hasFile('images')) {
+            $images = [];
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('listings', 'public');
+                $images[] = '/storage/' . $path; // Ensure correct URL format
+            }
+            $listing->update(['images' => json_encode($images)]);
+        }
 
         return redirect()->route('dashboard')->with('success', 'Listing created successfully!');
     }
-
     public function update(Request $request, Listing $listing)
     {
         $this->authorize('update', $listing);
 
+        Log::info('🔄 Full request data:', $request->all());
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'images' => 'array',
+            'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'street' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:255',
-            'state' => 'nullable|string|max:255',
-            'zip_code' => 'nullable|string|max:10',
-            'country' => 'nullable|string|max:255',
+            'delete_images' => 'nullable|string', // Accept it as a string first
         ]);
 
-        $listing->update($validated);
+        Log::info('✅ Validation passed.');
 
-        // Check if at least one address field is provided
-        $addressFields = $request->only(['street', 'city', 'state', 'zip_code', 'country']);
-        $hasAddressData = array_filter($addressFields); // Remove empty fields
+        // Convert delete_images to array if it's a JSON string
+        $deleteImages = !empty($request->delete_images) ? json_decode($request->delete_images, true) : [];
+        $deleteImages = is_array($deleteImages) ? $deleteImages : [];
 
-        if (!empty($hasAddressData)) {
-            // Update or create address with the provided fields
-            $listing->address()->updateOrCreate([], $addressFields);
-        } else {
-            // If no valid address fields, delete the address if it exists
-            $listing->address()->delete();
+        Log::info('🗑️ Deleting images:', $deleteImages);
+
+        // ✅ Retrieve existing images & ensure it's an array
+        $existingImages = json_decode($listing->images, true) ?? [];
+        $existingImages = is_array($existingImages) ? $existingImages : [];
+
+        // ✅ Remove Selected Images
+        if (!empty($deleteImages)) {
+            $existingImages = array_values(array_filter($existingImages, function ($image) use ($deleteImages) {
+                return !in_array($image, $deleteImages);
+            }));
+
+            foreach ($deleteImages as $image) {
+                $path = str_replace('/storage/', '', $image);
+                Storage::disk('public')->delete($path);
+            }
         }
+
+        // ✅ Handle New Image Uploads
+        if ($request->hasFile('images')) {
+            Log::info('📸 New images detected.');
+
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('listings', 'public');
+                $existingImages[] = '/storage/' . $path;
+            }
+        } else {
+            Log::info('🚫 No new images uploaded.');
+        }
+
+        // ✅ Save updated image array to database
+        if (!empty($existingImages)) {
+            Log::info('✅ Final saved images:', ['images' => $existingImages]);
+            $listing->images = json_encode($existingImages);
+        } else {
+            Log::info('🚫 No images left, setting to NULL.');
+            $listing->images = null;
+        }
+
+        $listing->save();
 
         return redirect()->route('listings.show', $listing)->with('success', 'Listing updated successfully!');
     }
-
 
 
     public function show($id)
@@ -97,28 +131,28 @@ class ListingsController extends Controller
         ]);
     }
 
-
     public function destroy(Listing $listing)
     {
-        // Authorize the user to delete the listing
         $this->authorize('delete', $listing);
 
-        // If the listing has images, delete them first
-        if ($listing->images) {
-            $images = json_decode($listing->images, true);
+        // Decode images JSON properly
+        $images = is_array($listing->images) ? $listing->images : json_decode($listing->images, true);
+        $images = is_array($images) ? $images : []; // Ensure it's an array
+
+        // If the listing has images, delete them from storage
+        if (!empty($images)) {
             foreach ($images as $image) {
-                // Assuming images are stored in the public disk
-                if (Storage::disk('public')->exists('listings/' . basename($image))) {
-                    Storage::disk('public')->delete('listings/' . basename($image));
+                $imagePath = str_replace('/storage/', '', $image); // Adjust path for storage deletion
+                if (Storage::disk('public')->exists($imagePath)) {
+                    Storage::disk('public')->delete($imagePath);
                 }
             }
         }
 
-        // Delete the listing
+        // Delete the listing from database
         $listing->delete();
 
-        // Redirect back to the dashboard or listings index with a success message
+        // Redirect to dashboard with success message
         return redirect()->route('dashboard')->with('success', 'Listing deleted successfully!');
     }
-
 }

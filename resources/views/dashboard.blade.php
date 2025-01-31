@@ -31,10 +31,12 @@
                             <!-- Image Section -->
                             <div class="mb-4">
                                 @php
-                                    $images = json_decode($listing->images, true) ?: [];
-                                    $imageUrl = $images[0] ?? 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'; // Placeholder image URL
+                                    // Decode images to ensure it's an array
+                                    $images = is_array($listing->images) ? $listing->images : json_decode($listing->images, true);
+                                    $images = array_filter($images, fn($img) => file_exists(public_path(str_replace('/storage/', 'storage/', $img))));
+                                    $firstImage = !empty($images) ? asset(reset($images)) : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png';
                                 @endphp
-                                <img src="{{ $imageUrl }}" alt="{{ $listing->title }}" class="w-full h-48 object-cover rounded">
+                                <img src="{{ $firstImage }}" alt="{{ $listing->title }}" class="w-full h-48 object-cover rounded">
                             </div>
 
                             <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -54,3 +56,4 @@
         @endif
     </div>
 </x-app-layout>
+

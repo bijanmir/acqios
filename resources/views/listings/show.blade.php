@@ -28,15 +28,24 @@
     <div class="py-8 max-w-7xl mx-auto">
         <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
             <!-- Scrollable Image Section -->
-            @if($listing->images)
+            @if(!empty($listing->images))
+                @php
+                    // Decode images if necessary
+                    $images = is_array($listing->images) ? $listing->images : json_decode($listing->images, true);
+                    $images = is_array($images) ? $images : []; // Ensure it's an array
+                @endphp
+
                 <div class="mb-6">
                     <div class="flex overflow-x-auto space-x-4 pb-4">
-                        @foreach(json_decode($listing->images, true) as $image)
-                            <img src="{{ $image }}" alt="Listing Image" class="h-52 object-cover rounded">
+                        @foreach($images as $image)
+                            @if(is_string($image) && !empty($image))
+                                <img src="{{ asset($image) }}" alt="Listing Image" class="h-52 w-52 object-cover rounded-lg">
+                            @endif
                         @endforeach
                     </div>
                 </div>
             @endif
+
 
             <!-- Listing Details -->
             <div class="mt-4">
