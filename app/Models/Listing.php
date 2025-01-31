@@ -16,12 +16,14 @@ class Listing extends Model
         'title',
         'description',
         'user_id',
-        'images'
+        'images',
+        'sections'
     ];
-
     protected $casts = [
         'images' => 'array',
+        'sections' => 'array',
     ];
+
 
 
     /**

@@ -13,6 +13,7 @@
                     @method('PUT')
                 @endif
                 <input type="hidden" name="delete_images" id="delete_images" value="[]">
+                <input type="hidden" name="deleted_sections" id="deleted_sections" value="[]">
 
                 <!-- Image Preview Section -->
                 <div id="imagePreview" class="mb-6">
@@ -94,16 +95,33 @@
                             $sections = old('sections', json_decode($listing->sections ?? '[]', true) ?? []);
                         @endphp
                         @foreach ($sections as $index => $section)
-                            <div class="section-entry mb-2">
-                                <input type="text" name="sections[{{ $index }}][title]" placeholder="Section Title"
-                                       value="{{ $section['title'] ?? '' }}" class="w-full border-gray-300 rounded-md">
-                                <textarea name="sections[{{ $index }}][description]" placeholder="Section Description"
-                                          class="w-full border-gray-300 rounded-md mt-1">{{ $section['description'] ?? '' }}</textarea>
+                            <div class="section-entry mb-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" data-uuid="{{ $section['id'] }}">
+                                <input type="hidden" name="sections[{{ $section['id'] }}][id]" value="{{ $section['id'] }}"> <!-- ✅ Hidden UUID -->
+
+                                <div class="flex justify-between">
+                                    <h4 class="text-lg font-semibold text-gray-700 dark:text-gray-200 section-title">
+                                        {{ $section['title'] ?? 'Section' }}
+                                    </h4>
+                                    <button type="button" onclick="removeSection('{{ $section['id'] }}', this)" class="text-red-500 font-bold px-2">✕</button>
+                                </div>
+
+                                <input type="text" name="sections[{{ $section['id'] }}][title]" placeholder="Section Title"
+                                       class="w-full border-gray-300 rounded-md p-2 mt-2 section-input"
+                                       value="{{ $section['title'] ?? '' }}" required>
+
+                                <textarea name="sections[{{ $section['id'] }}][description]" placeholder="Section Description"
+                                          class="w-full border-gray-300 rounded-md p-2 mt-2" rows="3" required>{{ $section['description'] ?? '' }}</textarea>
                             </div>
                         @endforeach
                     </div>
-                    <button type="button" id="add-section" class="mt-2 bg-blue-500 text-white px-3 py-1 rounded-md" onclick="addSection(this)">+ Add Section</button>
+
+                    <button type="button" id="add-section" class="mt-2 bg-blue-500 text-white px-3 py-1 rounded-md" onclick="addSection()">
+                        + Add Section
+                    </button>
+
                 </div>
+
+
 
                 <!-- Submit -->
                 <div class="flex justify-end mt-6">
@@ -131,66 +149,50 @@
             });
         });
 
-        function previewImages(event) {
-            const imageCarousel = document.getElementById('image-display-carousel');
-            const uploadButton = document.querySelector('.upload-image-button');
-            const files = event.target.files;
-
-            for (let file of files) {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const div = document.createElement('div');
-                        div.className = 'relative image-container';
-
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.className = 'w-52 h-52 object-cover rounded-lg shadow-md';
-
-                        div.appendChild(img);
-                        imageCarousel.insertBefore(div, uploadButton);
-                    };
-                    reader.readAsDataURL(file);
-                }
-            }
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
         }
 
-        function addSection(button) {
-            console.log("Add Section Button Clicked", button);
-
-            let index = document.querySelectorAll('.section-entry').length;
+        function addSection() {
             let container = document.getElementById("sections-container");
+            let uuid = generateUUID(); // Generate a unique ID for each section
 
             let div = document.createElement("div");
             div.classList.add("section-entry", "mb-4", "p-4", "bg-gray-100", "dark:bg-gray-700", "rounded-lg");
+            div.setAttribute("data-uuid", uuid);
 
             div.innerHTML = `
+        <input type="hidden" name="sections[${uuid}][id]" value="${uuid}">
         <div class="flex justify-between">
-            <h4 class="text-lg font-semibold text-gray-700 dark:text-gray-200 section-title">Section</h4>
-            <button type="button" onclick="removeSection(this)" class="text-red-500 font-bold px-2">✕</button>
+            <h4 class="text-lg font-semibold text-gray-700 dark:text-gray-200 section-title">New Section</h4>
+            <button type="button" onclick="removeSection('${uuid}', this)" class="text-red-500 font-bold px-2">✕</button>
         </div>
-        <input type="text" name="sections[\${index}][title]" placeholder="Section Title"
+        <input type="text" name="sections[${uuid}][title]" placeholder="Section Title"
                class="w-full border-gray-300 rounded-md p-2 mt-2 section-input" required>
-        <textarea name="sections[\${index}][description]" placeholder="Section Description"
+        <textarea name="sections[${uuid}][description]" placeholder="Section Description"
                   class="w-full border-gray-300 rounded-md p-2 mt-2" rows="3" required></textarea>
     `;
 
             container.appendChild(div);
-
-            // Add event listener to update the title as the user types
-            let titleInput = div.querySelector(".section-input");
-            let sectionTitle = div.querySelector(".section-title");
-
-            titleInput.addEventListener("input", function () {
-                sectionTitle.textContent = this.value.trim() || "Section"; // Default to "Section" if empty
-            });
         }
 
-        // Remove a section
-        function removeSection(button) {
-            button.closest(".section-entry").remove();
+        function removeSection(uuid, button) {
+            let section = document.querySelector(`[data-uuid="${uuid}"]`);
+            if (section) section.remove();
+
+            let deletedSectionsInput = document.getElementById("deleted_sections");
+            let deletedSections = JSON.parse(deletedSectionsInput.value || "[]");
+            deletedSections.push(uuid);
+            deletedSectionsInput.value = JSON.stringify(deletedSections);
         }
+
 
 
     </script>
+
+
+
 </x-app-layout>

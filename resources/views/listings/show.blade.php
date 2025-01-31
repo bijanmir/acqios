@@ -48,15 +48,21 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-medium">Price</label>
-                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->price ? '$' . number_format($listing->price, 2) : 'N/A' }}</p>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">
+                        {{ $listing->price ? '$' . number_format($listing->price, 2) : 'N/A' }}
+                    </p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium">Revenue</label>
-                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->revenue ? '$' . number_format($listing->revenue, 2) : 'N/A' }}</p>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">
+                        {{ $listing->revenue ? '$' . number_format($listing->revenue, 2) : 'N/A' }}
+                    </p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium">Profit</label>
-                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->profit ? '$' . number_format($listing->profit, 2) : 'N/A' }}</p>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">
+                        {{ $listing->profit ? '$' . number_format($listing->profit, 2) : 'N/A' }}
+                    </p>
                 </div>
             </div>
 
@@ -64,15 +70,21 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
                 <div>
                     <label class="block text-sm font-medium">Category</label>
-                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->category ?? 'N/A' }}</p>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">
+                        {{ $listing->category ?? 'N/A' }}
+                    </p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium">Location</label>
-                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->location ?? 'N/A' }}</p>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">
+                        {{ $listing->location ?? 'N/A' }}
+                    </p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium">Years in Business</label>
-                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->years_in_business ?? 'N/A' }}</p>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">
+                        {{ $listing->years_in_business ?? 'N/A' }}
+                    </p>
                 </div>
             </div>
 
@@ -80,15 +92,27 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
                 <div>
                     <label class="block text-sm font-medium">Contact Email</label>
-                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->contact_email ?? 'N/A' }}</p>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">
+                        {{ $listing->contact_email ?? 'N/A' }}
+                    </p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium">Phone Number</label>
-                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->phone_number ?? 'N/A' }}</p>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">
+                        {{ $listing->phone_number ?? 'N/A' }}
+                    </p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium">Website</label>
-                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->website ? "<a href=\"$listing->website\" class=\"text-blue-500\" target=\"_blank\">$listing->website</a>" : 'N/A' }}</p>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">
+                        @if($listing->website)
+                            <a href="{{ $listing->website }}" class="text-blue-500" target="_blank">
+                                {{ $listing->website }}
+                            </a>
+                        @else
+                            N/A
+                        @endif
+                    </p>
                 </div>
             </div>
 
@@ -98,13 +122,18 @@
                 @php
                     $sections = json_decode($listing->sections ?? '[]', true) ?? [];
                 @endphp
-                @foreach ($sections as $section)
-                    <div class="mb-4 p-4 bg-gray-100 dark:bg-gray-900 rounded-md">
-                        <h4 class="text-lg font-bold">{{ $section['title'] ?? 'Untitled Section' }}</h4>
-                        <p class="text-gray-600 dark:text-gray-400">{{ $section['description'] ?? 'No description available.' }}</p>
-                    </div>
-                @endforeach
+                @if (!empty($sections))
+                    @foreach ($sections as $section)
+                        <div class="mb-4 p-4 bg-gray-100 dark:bg-gray-900 rounded-md">
+                            <h4 class="text-lg font-bold">{{ $section['title'] ?? 'Untitled Section' }}</h4>
+                            <p class="text-gray-600 dark:text-gray-400">{{ $section['description'] ?? 'No description available.' }}</p>
+                        </div>
+                    @endforeach
+                @else
+                    <p class="text-gray-500">No sections available.</p>
+                @endif
             </div>
+
 
             <!-- Created & Updated Timestamps -->
             <div class="text-sm text-gray-500 dark:text-gray-400 mt-6">
