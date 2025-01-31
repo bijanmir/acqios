@@ -5,9 +5,13 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Listing;
 
+Route::middleware(['auth', 'verified'])->get('/dashboard', function () {
+    return view('dashboard');
+});
+
 Route::get('/', function () {
     $listings = Listing::latest()->get(); // Fetch all listings sorted by the latest
-    return view('welcome', compact('listings'));
+    return view('landing', compact('listings'));
 })->name('home');
 
 Route::get('/dashboard', function () {
