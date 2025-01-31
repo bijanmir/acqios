@@ -31,12 +31,23 @@
                             <!-- Image Section -->
                             <div class="mb-4">
                                 @php
-                                    // Decode images to ensure it's an array
-                                    $images = is_array($listing->images) ? $listing->images : json_decode($listing->images, true);
-                                    $images = array_filter($images, fn($img) => file_exists(public_path(str_replace('/storage/', 'storage/', $img))));
+                                    // Decode images safely and ensure it's always an array
+                                    $images = $listing->images ? json_decode($listing->images, true) : [];
+
+                                    // Ensure $images is an array (handle cases where json_decode returns null)
+                                    $images = is_array($images) ? $images : [];
+
+                                    // Filter out non-existing images
+                                    $images = array_filter($images, function ($img) {
+                                        return file_exists(public_path(str_replace('/storage/', 'storage/', $img)));
+                                    });
+
+                                    // Get first image or use placeholder
                                     $firstImage = !empty($images) ? asset(reset($images)) : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png';
                                 @endphp
+
                                 <img src="{{ $firstImage }}" alt="{{ $listing->title }}" class="w-full h-48 object-cover rounded">
+
                             </div>
 
                             <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">

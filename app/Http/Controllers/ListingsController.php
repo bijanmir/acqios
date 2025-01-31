@@ -65,17 +65,18 @@ class ListingsController extends Controller
 
         Log::info('✅ Validation passed.');
 
-        // Convert delete_images to array if it's a JSON string
-        $deleteImages = !empty($request->delete_images) ? json_decode($request->delete_images, true) : [];
-        $deleteImages = is_array($deleteImages) ? $deleteImages : [];
-
-        Log::info('🗑️ Deleting images:', $deleteImages);
+        // Update title and description
+        $listing->title = $request->title;
+        $listing->description = $request->description;
 
         // ✅ Retrieve existing images & ensure it's an array
         $existingImages = json_decode($listing->images, true) ?? [];
         $existingImages = is_array($existingImages) ? $existingImages : [];
 
         // ✅ Remove Selected Images
+        $deleteImages = !empty($request->delete_images) ? json_decode($request->delete_images, true) : [];
+        $deleteImages = is_array($deleteImages) ? $deleteImages : [];
+
         if (!empty($deleteImages)) {
             $existingImages = array_values(array_filter($existingImages, function ($image) use ($deleteImages) {
                 return !in_array($image, $deleteImages);
@@ -108,6 +109,7 @@ class ListingsController extends Controller
             $listing->images = null;
         }
 
+        // ✅ Save listing with new title and description
         $listing->save();
 
         return redirect()->route('listings.show', $listing)->with('success', 'Listing updated successfully!');
