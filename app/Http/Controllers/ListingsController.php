@@ -62,7 +62,6 @@ class ListingsController extends Controller
 
         Log::info('🔍 Full Request Data:', $request->all());
 
-        // Validate request
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -71,57 +70,72 @@ class ListingsController extends Controller
             'delete_images' => 'nullable|string',
             'deleted_sections' => 'nullable|string',
             'sections' => 'nullable|array',
-            'sections.*.id' => 'sometimes|string', // ✅ Optional ID field for updates
+            'sections.*.id' => 'sometimes|string',
             'sections.*.title' => 'required|string|max:255',
             'sections.*.description' => 'required|string|max:2000',
         ]);
 
         Log::info('📌 Validated Sections:', ['sections' => $validated['sections']]);
 
-        // Retrieve existing sections as an associative array (UUID as keys)
+        // Process image deletions
+        if ($request->has('delete_images')) {
+            $deleteImages = json_decode($request->delete_images, true) ?? [];
+            $existingImages = json_decode($listing->images, true) ?? [];
+
+            // Remove selected images from storage and database
+            $existingImages = array_filter($existingImages, function ($image) use ($deleteImages) {
+                if (in_array($image, $deleteImages)) {
+                    Storage::disk('public')->delete(str_replace('/storage/', '', $image));
+                    return false;
+                }
+                return true;
+            });
+
+            $listing->update(['images' => json_encode(array_values($existingImages))]);
+        }
+
+        // Process new image uploads
+        if ($request->hasFile('images')) {
+            $images = json_decode($listing->images, true) ?? [];
+
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('listings', 'public');
+                $images[] = '/storage/' . $path;
+            }
+
+            $listing->update(['images' => json_encode($images)]);
+        }
+
+        // Handle sections
         $existingSections = json_decode($listing->sections, true) ?? [];
-        $existingSections = collect($existingSections)->keyBy('id')->toArray(); // ✅ Ensures UUID-based keys
+        $existingSections = collect($existingSections)->keyBy('id')->toArray();
 
-        Log::info('🔄 Existing Sections Before Changes:', ['sections' => $existingSections]);
-
-        // Handle Section Removal
         if ($request->has('deleted_sections')) {
             $deletedSections = json_decode($request->deleted_sections, true) ?? [];
             foreach ($deletedSections as $deletedId) {
-                unset($existingSections[$deletedId]); // ✅ Removes deleted sections
+                unset($existingSections[$deletedId]);
             }
-            Log::info('🚫 Removed Sections:', ['deleted_sections' => $deletedSections]);
         }
 
-        // Merge new and updated sections (Preserve UUIDs, avoid duplication)
         foreach ($validated['sections'] as $uuid => $section) {
             if (isset($existingSections[$uuid])) {
-                // ✅ Update existing section
                 $existingSections[$uuid]['title'] = $section['title'];
                 $existingSections[$uuid]['description'] = $section['description'];
             } else {
-                // ✅ Add new section with a unique UUID
                 $existingSections[$uuid] = array_merge(['id' => $uuid], $section);
             }
         }
 
-        Log::info('🔄 Sections Before Saving:', ['sections' => $existingSections]);
-
-        // Ensure JSON is stored correctly in MySQL
-        $finalSections = json_encode(array_values($existingSections), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-
-        if (empty($existingSections)) {
-            $finalSections = json_encode([]); // ✅ Prevents NULL storage
-        }
-
-        // Update listing
         $listing->update([
             'title' => $request->title,
             'description' => $request->description,
-            'sections' => $finalSections, // ✅ Save as JSON
+            'sections' => json_encode(array_values($existingSections)),
         ]);
 
-        Log::info('✅ Sections Saved:', ['sections' => json_decode($listing->sections, true)]);
+        Log::info('✅ Sections & Images Saved:', [
+            'sections' => json_decode($listing->sections, true),
+            'images' => json_decode($listing->images, true),
+        ]);
 
         return redirect()->route('listings.show', $listing)->with('success', 'Listing updated successfully!');
     }

@@ -99,9 +99,7 @@
                                 <input type="hidden" name="sections[{{ $section['id'] }}][id]" value="{{ $section['id'] }}"> <!-- ✅ Hidden UUID -->
 
                                 <div class="flex justify-between">
-                                    <h4 class="text-lg font-semibold text-gray-700 dark:text-gray-200 section-title">
-                                        {{ $section['title'] ?? 'Section' }}
-                                    </h4>
+                                   <div></div>
                                     <button type="button" onclick="removeSection('{{ $section['id'] }}', this)" class="text-red-500 font-bold px-2">✕</button>
                                 </div>
 
@@ -138,6 +136,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             let deleteImagesInput = document.getElementById("delete_images");
             let deleteImagesArray = [];
+            let uploadedImages = new Set(); // Track uploaded images to prevent duplicates
 
             document.querySelectorAll(".delete-image-button").forEach(button => {
                 button.addEventListener("click", function () {
@@ -147,7 +146,48 @@
                     this.closest(".image-container").remove();
                 });
             });
+
+            document.getElementById("images").addEventListener("change", function(event) {
+                previewImages(event, uploadedImages);
+            });
         });
+
+        function previewImages(event, uploadedImages) {
+            const imageCarousel = document.getElementById('image-display-carousel');
+            const uploadButton = document.querySelector('.upload-image-button');
+            const files = event.target.files;
+
+            for (let file of files) {
+                if (file.type.startsWith('image/') && !uploadedImages.has(file.name)) {
+                    uploadedImages.add(file.name); // Prevent duplicate previews
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const div = document.createElement('div');
+                        div.className = 'relative image-container';
+
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'w-52 h-52 object-cover rounded-lg shadow-md';
+
+                        const button = document.createElement('button');
+                        button.className = 'absolute top-0 right-0 bg-red-500 text-white p-1 px-2 rounded-full delete-image-button';
+                        button.innerHTML = '✕';
+                        button.onclick = function () {
+                            div.remove();
+                            uploadedImages.delete(file.name); // Remove from tracking
+                        };
+
+                        div.appendChild(img);
+                        div.appendChild(button);
+                        imageCarousel.insertBefore(div, uploadButton);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+
+
 
         function generateUUID() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
