@@ -62,6 +62,7 @@ class ListingsController extends Controller
 
         Log::info('🔍 Full Request Data:', $request->all());
 
+        // Validate Request
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -75,18 +76,21 @@ class ListingsController extends Controller
             'sections.*.description' => 'required|string|max:2000',
         ]);
 
+        // Ensure sections key always exists to prevent errors
+        $validated['sections'] = $validated['sections'] ?? [];
+
         Log::info('📌 Validated Sections:', ['sections' => $validated['sections']]);
 
-        // Process image deletions
-        if ($request->has('delete_images')) {
+        // **🔄 Process Image Deletions**
+        if ($request->filled('delete_images')) {
             $deleteImages = json_decode($request->delete_images, true) ?? [];
             $existingImages = json_decode($listing->images, true) ?? [];
 
-            // Remove selected images from storage and database
+            // Remove images from storage
             $existingImages = array_filter($existingImages, function ($image) use ($deleteImages) {
                 if (in_array($image, $deleteImages)) {
                     Storage::disk('public')->delete(str_replace('/storage/', '', $image));
-                    return false;
+                    return false; // Remove from the array
                 }
                 return true;
             });
@@ -94,7 +98,7 @@ class ListingsController extends Controller
             $listing->update(['images' => json_encode(array_values($existingImages))]);
         }
 
-        // Process new image uploads
+        // **📸 Process New Image Uploads**
         if ($request->hasFile('images')) {
             $images = json_decode($listing->images, true) ?? [];
 
@@ -106,30 +110,32 @@ class ListingsController extends Controller
             $listing->update(['images' => json_encode($images)]);
         }
 
-        // Handle sections
+        // **🔄 Handle Sections Correctly**
         $existingSections = json_decode($listing->sections, true) ?? [];
         $existingSections = collect($existingSections)->keyBy('id')->toArray();
 
-        if ($request->has('deleted_sections')) {
+        Log::info('🔄 Existing Sections Before Changes:', ['sections' => $existingSections]);
+
+        // **🚫 Process Section Deletions**
+        if ($request->filled('deleted_sections')) {
             $deletedSections = json_decode($request->deleted_sections, true) ?? [];
             foreach ($deletedSections as $deletedId) {
                 unset($existingSections[$deletedId]);
             }
         }
 
+        // **🔄 Merge New & Updated Sections**
         foreach ($validated['sections'] as $uuid => $section) {
-            if (isset($existingSections[$uuid])) {
-                $existingSections[$uuid]['title'] = $section['title'];
-                $existingSections[$uuid]['description'] = $section['description'];
-            } else {
-                $existingSections[$uuid] = array_merge(['id' => $uuid], $section);
-            }
+            $existingSections[$uuid] = array_merge(['id' => $uuid], $section);
         }
 
+        Log::info('🔄 Sections Before Saving:', ['sections' => $existingSections]);
+
+        // **✅ Save Everything Correctly**
         $listing->update([
-            'title' => $request->title,
-            'description' => $request->description,
-            'sections' => json_encode(array_values($existingSections)),
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'sections' => json_encode(array_values($existingSections), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
         ]);
 
         Log::info('✅ Sections & Images Saved:', [
