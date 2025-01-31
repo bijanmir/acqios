@@ -85,7 +85,37 @@
                         <input type="text" name="location" id="location" class="w-full rounded-md border-gray-300"
                                value="{{ old('location', $listing->location ?? '') }}">
                     </div>
+                    <div>
+                        <label for="years_in_business" class="block text-sm font-medium">Years in Business</label>
+                        <input type="number" name="years_in_business" id="years_in_business" class="w-full rounded-md border-gray-300"
+                               value="{{ old('years_in_business', $listing->years_in_business ?? '') }}">
+                    </div>
+
                 </div>
+
+                <!-- Additional Business Details -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+
+                    <div>
+                        <label for="contact_email" class="block text-sm font-medium">Contact Email</label>
+                        <input type="email" name="contact_email" id="contact_email" class="w-full rounded-md border-gray-300"
+                               value="{{ old('contact_email', $listing->contact_email ?? '') }}">
+                    </div>
+                    <div>
+                        <label for="phone_number" class="block text-sm font-medium">Phone Number</label>
+                        <input type="text" name="phone_number" id="phone_number" class="w-full rounded-md border-gray-300"
+                               value="{{ old('phone_number', $listing->phone_number ?? '') }}">
+                    </div>
+                    <div>
+                        <label for="website" class="block text-sm font-medium">Website</label>
+                        <input type="text" name="website" id="website" class="w-full rounded-md border-gray-300"
+                               value="{{ old('website', $listing->website ?? '') }}">
+                    </div>
+                </div>
+
+
+
+
 
                 <!-- Business Sections -->
                 <div class="mb-4 mt-6">

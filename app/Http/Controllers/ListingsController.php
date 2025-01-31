@@ -62,7 +62,7 @@ class ListingsController extends Controller
 
         Log::info('🔍 Full Request Data:', $request->all());
 
-        // Validate Request
+        // ✅ **Validate Request Inputs**
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -74,19 +74,28 @@ class ListingsController extends Controller
             'sections.*.id' => 'sometimes|string',
             'sections.*.title' => 'required|string|max:255',
             'sections.*.description' => 'required|string|max:2000',
+            'price' => 'nullable|numeric',
+            'revenue' => 'nullable|numeric',
+            'profit' => 'nullable|numeric',
+            'category' => 'nullable|string|max:255',
+            'location' => 'nullable|string|max:255',
+            'years_in_business' => 'nullable|numeric',
+            'contact_email' => 'nullable|string|max:255',
+            'phone_number' => 'nullable|string|max:255',
+            'website' => 'nullable|string|max:255',
         ]);
 
-        // Ensure sections key always exists to prevent errors
+        // Ensure `sections` key always exists to prevent null errors
         $validated['sections'] = $validated['sections'] ?? [];
 
         Log::info('📌 Validated Sections:', ['sections' => $validated['sections']]);
 
-        // **🔄 Process Image Deletions**
+        // ✅ **🔄 Process Image Deletions**
         if ($request->filled('delete_images')) {
             $deleteImages = json_decode($request->delete_images, true) ?? [];
             $existingImages = json_decode($listing->images, true) ?? [];
 
-            // Remove images from storage
+            // Remove selected images from storage and database
             $existingImages = array_filter($existingImages, function ($image) use ($deleteImages) {
                 if (in_array($image, $deleteImages)) {
                     Storage::disk('public')->delete(str_replace('/storage/', '', $image));
@@ -95,10 +104,10 @@ class ListingsController extends Controller
                 return true;
             });
 
-            $listing->update(['images' => json_encode(array_values($existingImages))]);
+            $listing->update(['images' => empty($existingImages) ? null : json_encode(array_values($existingImages))]);
         }
 
-        // **📸 Process New Image Uploads**
+        // ✅ **📸 Process New Image Uploads**
         if ($request->hasFile('images')) {
             $images = json_decode($listing->images, true) ?? [];
 
@@ -110,13 +119,13 @@ class ListingsController extends Controller
             $listing->update(['images' => json_encode($images)]);
         }
 
-        // **🔄 Handle Sections Correctly**
+        // ✅ **🔄 Handle Sections Correctly**
         $existingSections = json_decode($listing->sections, true) ?? [];
         $existingSections = collect($existingSections)->keyBy('id')->toArray();
 
         Log::info('🔄 Existing Sections Before Changes:', ['sections' => $existingSections]);
 
-        // **🚫 Process Section Deletions**
+        // ✅ **🚫 Process Section Deletions**
         if ($request->filled('deleted_sections')) {
             $deletedSections = json_decode($request->deleted_sections, true) ?? [];
             foreach ($deletedSections as $deletedId) {
@@ -124,18 +133,34 @@ class ListingsController extends Controller
             }
         }
 
-        // **🔄 Merge New & Updated Sections**
+        // ✅ **🔄 Merge New & Updated Sections**
         foreach ($validated['sections'] as $uuid => $section) {
-            $existingSections[$uuid] = array_merge(['id' => $uuid], $section);
+            if (!empty($uuid) && isset($existingSections[$uuid])) {
+                // Update existing section
+                $existingSections[$uuid]['title'] = $section['title'];
+                $existingSections[$uuid]['description'] = $section['description'];
+            } else {
+                // Add new section
+                $existingSections[$uuid] = array_merge(['id' => $uuid], $section);
+            }
         }
 
         Log::info('🔄 Sections Before Saving:', ['sections' => $existingSections]);
 
-        // **✅ Save Everything Correctly**
+        // ✅ **Save Everything Correctly**
         $listing->update([
             'title' => $validated['title'],
             'description' => $validated['description'],
-            'sections' => json_encode(array_values($existingSections), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            'price' => $validated['price'] ?? null,
+            'revenue' => $validated['revenue'] ?? null,
+            'profit' => $validated['profit'] ?? null,
+            'category' => $validated['category'] ?? null,
+            'location' => $validated['location'] ?? null,
+            'sections' => empty($existingSections) ? null : json_encode(array_values($existingSections), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            'email' => $validated['contact_email'] ?? null,
+            'phone' => $validated['phone_number'] ?? null,
+            'website' => $validated['website'] ?? null,
+            'years_in_business' => $validated['years_in_business'] ?? null,
         ]);
 
         Log::info('✅ Sections & Images Saved:', [
@@ -145,6 +170,7 @@ class ListingsController extends Controller
 
         return redirect()->route('listings.show', $listing)->with('success', 'Listing updated successfully!');
     }
+
 
 
 
