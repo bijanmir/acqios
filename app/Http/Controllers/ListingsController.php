@@ -85,6 +85,7 @@ class ListingsController extends Controller
             'website' => 'nullable|string|max:255',
         ]);
 
+
         // Ensure `sections` key always exists to prevent null errors
         $validated['sections'] = $validated['sections'] ?? [];
 
@@ -157,8 +158,8 @@ class ListingsController extends Controller
             'category' => $validated['category'] ?? null,
             'location' => $validated['location'] ?? null,
             'sections' => empty($existingSections) ? null : json_encode(array_values($existingSections), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
-            'email' => $validated['contact_email'] ?? null,
-            'phone' => $validated['phone_number'] ?? null,
+            'contact_email' => $validated['contact_email'] ?? null,
+            'phone_number' => $validated['phone_number'] ?? null,
             'website' => $validated['website'] ?? null,
             'years_in_business' => $validated['years_in_business'] ?? null,
         ]);
