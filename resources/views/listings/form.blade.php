@@ -12,7 +12,6 @@
                 @if (isset($method) && $method === 'PUT')
                     @method('PUT')
                 @endif
-                <!-- Hidden Input for Deleted Images -->
                 <input type="hidden" name="delete_images" id="delete_images" value="[]">
 
                 <!-- Image Preview Section -->
@@ -42,22 +41,72 @@
                     </div>
                 </div>
 
-                <!-- Title -->
+                <!-- Title & Description -->
                 <div class="mb-4">
-                    <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Title</label>
-                    <input type="text" name="title" id="title" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    <label for="title" class="block text-sm font-medium">Title</label>
+                    <input type="text" name="title" id="title" class="w-full rounded-md border-gray-300"
                            value="{{ old('title', $listing->title ?? '') }}" required>
                 </div>
 
-                <!-- Description -->
                 <div class="mb-4">
-                    <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Description</label>
-                    <textarea name="description" id="description" rows="4" class="mt-1 block w-full rounded-md shadow-sm dark:bg-gray-900 dark:text-gray-300 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    <label for="description" class="block text-sm font-medium">Description</label>
+                    <textarea name="description" id="description" rows="4" class="w-full rounded-md border-gray-300"
                               required>{{ old('description', $listing->description ?? '') }}</textarea>
                 </div>
 
+                <!-- Business Details -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label for="price" class="block text-sm font-medium">Price</label>
+                        <input type="number" step="0.01" name="price" id="price" class="w-full rounded-md border-gray-300"
+                               value="{{ old('price', $listing->price ?? '') }}">
+                    </div>
+                    <div>
+                        <label for="revenue" class="block text-sm font-medium">Revenue</label>
+                        <input type="number" step="0.01" name="revenue" id="revenue" class="w-full rounded-md border-gray-300"
+                               value="{{ old('revenue', $listing->revenue ?? '') }}">
+                    </div>
+                    <div>
+                        <label for="profit" class="block text-sm font-medium">Profit</label>
+                        <input type="number" step="0.01" name="profit" id="profit" class="w-full rounded-md border-gray-300"
+                               value="{{ old('profit', $listing->profit ?? '') }}">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+                    <div>
+                        <label for="category" class="block text-sm font-medium">Category</label>
+                        <input type="text" name="category" id="category" class="w-full rounded-md border-gray-300"
+                               value="{{ old('category', $listing->category ?? '') }}">
+                    </div>
+                    <div>
+                        <label for="location" class="block text-sm font-medium">Location</label>
+                        <input type="text" name="location" id="location" class="w-full rounded-md border-gray-300"
+                               value="{{ old('location', $listing->location ?? '') }}">
+                    </div>
+                </div>
+
+                <!-- Business Sections -->
+                <div class="mb-4 mt-6">
+                    <label class="block text-sm font-medium">Business Sections</label>
+                    <div id="sections-container">
+                        @php
+                            $sections = old('sections', json_decode($listing->sections ?? '[]', true) ?? []);
+                        @endphp
+                        @foreach ($sections as $index => $section)
+                            <div class="section-entry mb-2">
+                                <input type="text" name="sections[{{ $index }}][title]" placeholder="Section Title"
+                                       value="{{ $section['title'] ?? '' }}" class="w-full border-gray-300 rounded-md">
+                                <textarea name="sections[{{ $index }}][description]" placeholder="Section Description"
+                                          class="w-full border-gray-300 rounded-md mt-1">{{ $section['description'] ?? '' }}</textarea>
+                            </div>
+                        @endforeach
+                    </div>
+                    <button type="button" id="add-section" class="mt-2 bg-blue-500 text-white px-3 py-1 rounded-md" onclick="addSection(this)">+ Add Section</button>
+                </div>
+
                 <!-- Submit -->
-                <div class="flex justify-end">
+                <div class="flex justify-end mt-6">
                     <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
                         {{ isset($listing) ? 'Update Listing' : 'Create Listing' }}
                     </button>
@@ -66,7 +115,7 @@
         </div>
     </div>
 
-    <!-- JavaScript for Handling Image Deletion & Preview -->
+    <!-- JavaScript for Handling Images & Sections -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             let deleteImagesInput = document.getElementById("delete_images");
@@ -77,8 +126,6 @@
                     let imageUrl = this.dataset.image;
                     deleteImagesArray.push(imageUrl);
                     deleteImagesInput.value = JSON.stringify(deleteImagesArray);
-
-                    // Remove the image from preview
                     this.closest(".image-container").remove();
                 });
             });
@@ -86,14 +133,10 @@
 
         function previewImages(event) {
             const imageCarousel = document.getElementById('image-display-carousel');
-            const uploadButton = document.querySelector('.upload-image-button'); // The upload button container
+            const uploadButton = document.querySelector('.upload-image-button');
             const files = event.target.files;
 
-            if (!files.length) return; // Stop if no files are selected
-
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-
+            for (let file of files) {
                 if (file.type.startsWith('image/')) {
                     const reader = new FileReader();
                     reader.onload = function (e) {
@@ -104,25 +147,48 @@
                         img.src = e.target.result;
                         img.className = 'w-52 h-52 object-cover rounded-lg shadow-md';
 
-                        const deleteButton = document.createElement('button');
-                        deleteButton.type = 'button';
-                        deleteButton.className = 'absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full delete-image-button';
-                        deleteButton.textContent = '✕';
-
-                        deleteButton.onclick = function () {
-                            div.remove();
-                        };
-
                         div.appendChild(img);
-                        div.appendChild(deleteButton);
-
-                        // **Insert the preview BEFORE the upload button**
                         imageCarousel.insertBefore(div, uploadButton);
                     };
-
                     reader.readAsDataURL(file);
                 }
             }
+        }
+
+        function addSection(button) {
+            console.log("Add Section Button Clicked", button);
+
+            let index = document.querySelectorAll('.section-entry').length;
+            let container = document.getElementById("sections-container");
+
+            let div = document.createElement("div");
+            div.classList.add("section-entry", "mb-4", "p-4", "bg-gray-100", "dark:bg-gray-700", "rounded-lg");
+
+            div.innerHTML = `
+        <div class="flex justify-between">
+            <h4 class="text-lg font-semibold text-gray-700 dark:text-gray-200 section-title">Section</h4>
+            <button type="button" onclick="removeSection(this)" class="text-red-500 font-bold px-2">✕</button>
+        </div>
+        <input type="text" name="sections[\${index}][title]" placeholder="Section Title"
+               class="w-full border-gray-300 rounded-md p-2 mt-2 section-input" required>
+        <textarea name="sections[\${index}][description]" placeholder="Section Description"
+                  class="w-full border-gray-300 rounded-md p-2 mt-2" rows="3" required></textarea>
+    `;
+
+            container.appendChild(div);
+
+            // Add event listener to update the title as the user types
+            let titleInput = div.querySelector(".section-input");
+            let sectionTitle = div.querySelector(".section-title");
+
+            titleInput.addEventListener("input", function () {
+                sectionTitle.textContent = this.value.trim() || "Section"; // Default to "Section" if empty
+            });
+        }
+
+        // Remove a section
+        function removeSection(button) {
+            button.closest(".section-entry").remove();
         }
 
 

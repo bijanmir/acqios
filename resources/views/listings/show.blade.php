@@ -27,37 +27,89 @@
 
     <div class="py-8 max-w-7xl mx-auto">
         <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <!-- Scrollable Image Section -->
+            <!-- Image Gallery -->
             @if(!empty($listing->images))
                 @php
-                    // Decode images if necessary
                     $images = is_array($listing->images) ? $listing->images : json_decode($listing->images, true);
-                    $images = is_array($images) ? $images : []; // Ensure it's an array
+                    $images = is_array($images) ? $images : [];
                 @endphp
-
                 <div class="mb-6">
                     <div class="flex overflow-x-auto space-x-4 pb-4">
                         @foreach($images as $image)
                             @if(is_string($image) && !empty($image))
-                                <img src="{{ asset($image) }}" alt="Listing Image" class="h-52 w-52 object-cover rounded-lg">
+                                <img src="{{ asset($image) }}" alt="Listing Image" class="h-52 w-52 object-cover rounded-lg shadow-md">
                             @endif
                         @endforeach
                     </div>
                 </div>
             @endif
 
-
             <!-- Listing Details -->
-            <div class="mt-4">
-                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">
-                    {{ $listing->title }}
-                </h3>
-                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                    {{ $listing->description }}
-                </p>
-                <p class="text-sm text-gray-500 dark:text-gray-500">
-                    Created on: {{ $listing->created_at->format('M d, Y') }}
-                </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium">Price</label>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->price ? '$' . number_format($listing->price, 2) : 'N/A' }}</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">Revenue</label>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->revenue ? '$' . number_format($listing->revenue, 2) : 'N/A' }}</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">Profit</label>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->profit ? '$' . number_format($listing->profit, 2) : 'N/A' }}</p>
+                </div>
+            </div>
+
+            <!-- Business Details -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+                <div>
+                    <label class="block text-sm font-medium">Category</label>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->category ?? 'N/A' }}</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">Location</label>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->location ?? 'N/A' }}</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">Years in Business</label>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->years_in_business ?? 'N/A' }}</p>
+                </div>
+            </div>
+
+            <!-- Contact Details -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+                <div>
+                    <label class="block text-sm font-medium">Contact Email</label>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->contact_email ?? 'N/A' }}</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">Phone Number</label>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->phone_number ?? 'N/A' }}</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">Website</label>
+                    <p class="bg-gray-100 dark:bg-gray-900 p-2 rounded-md">{{ $listing->website ? "<a href=\"$listing->website\" class=\"text-blue-500\" target=\"_blank\">$listing->website</a>" : 'N/A' }}</p>
+                </div>
+            </div>
+
+            <!-- Business Sections -->
+            <div class="mb-4 mt-6">
+                <label class="block text-sm font-medium">Business Sections</label>
+                @php
+                    $sections = json_decode($listing->sections ?? '[]', true) ?? [];
+                @endphp
+                @foreach ($sections as $section)
+                    <div class="mb-4 p-4 bg-gray-100 dark:bg-gray-900 rounded-md">
+                        <h4 class="text-lg font-bold">{{ $section['title'] ?? 'Untitled Section' }}</h4>
+                        <p class="text-gray-600 dark:text-gray-400">{{ $section['description'] ?? 'No description available.' }}</p>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Created & Updated Timestamps -->
+            <div class="text-sm text-gray-500 dark:text-gray-400 mt-6">
+                <p>Created on: {{ $listing->created_at->format('M d, Y') }}</p>
+                <p>Last Updated: {{ $listing->updated_at->format('M d, Y') }}</p>
             </div>
         </div>
     </div>
