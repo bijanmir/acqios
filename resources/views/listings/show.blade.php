@@ -1,50 +1,66 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200">
-                {{ $listing->title }}
+        <!-- Header Section: Title + Verified Badge + Buttons -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+            <!-- Title & Verified Badge -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-3 sm:justify-between w-full">
+
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 leading-tight text-center">
+                    {{ $listing->title }}
+                </h2>
+
                 @if($listing->is_verified)
-                    <div class="bg-black w-10">
-                        <img src="/images/icon" alt="">
-                    </div>
+                    <span class=" flex items-center bg-green-600 w-fit mx-auto px-4 py-2 my-2 rounded-full text-white shadow-md">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Verified
+                    </span>
                 @endif
-            </h2>
-            @auth
-                @if(auth()->user()->id === $listing->user_id)
-                    <a href="{{ route('listings.edit', $listing) }}"
-                       class="ml-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-                        Edit Listing
-                    </a>
-                @else
-                    <a href="#"
-                       class="ml-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
-                        Message Listing Owner
-                    </a>
-                @endif
-            @else
-                <a href="{{ route('login') }}"
-                   class="ml-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
-                    Login to Contact Owner
-                </a>
-            @endauth
+            </div>
+
         </div>
     </x-slot>
 
-    <div class="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6">
 
-            <!-- Image Gallery with Swipe Support -->
+
+
+    <!-- Main Content -->
+    <div class="py-6 md:py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 border border-gray-200 dark:border-gray-700">
+
+            <!-- Image Gallery -->
             @if(!empty($listing->images))
                 @php
                     $images = is_array($listing->images) ? $listing->images : json_decode($listing->images, true);
                     $images = is_array($images) ? $images : [];
                 @endphp
-                <div class="mb-6">
+                <div class="mb-8">
+                    <div class="mb-5 flex justify-end">
+                        <!-- Action Buttons -->
+                        @auth
+                            @if(auth()->user()->id === $listing->user_id)
+                                <a href="{{ route('listings.edit', $listing) }}"
+                                   class="px-4 py-2 w-fit bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 text-center sm:w-auto w-full">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            @else
+                                <a href="#" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 text-center sm:w-auto w-full">
+                                    Message Owner
+                                </a>
+                            @endif
+                        @else
+                            <a href="{{ route('login') }}"
+                               class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 text-center sm:w-auto w-full">
+                                Login to Contact
+                            </a>
+                        @endauth
+                    </div>
                     <div class="flex overflow-x-auto space-x-4 pb-4 snap-x snap-mandatory">
                         @foreach($images as $image)
                             @if(is_string($image) && !empty($image))
                                 <img src="{{ asset($image) }}" alt="Listing Image"
-                                     class="h-56 w-auto object-cover rounded-lg shadow-md border dark:border-gray-700 snap-center">
+                                     class="h-64 w-full object-cover rounded-xl shadow-md border dark:border-gray-700 snap-center transition-transform hover:scale-105 aspect-w-16 aspect-h-9 relative">
                             @endif
                         @endforeach
                     </div>
@@ -52,11 +68,11 @@
             @endif
 
             <!-- Listing Details -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 @foreach (['price' => 'Price', 'revenue' => 'Revenue', 'profit' => 'Profit'] as $key => $label)
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ $label }}</label>
-                        <p class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-300 p-3 rounded-lg shadow-sm">
+                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
+                        <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">{{ $label }}</label>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">
                             {{ $listing->$key ? '$' . number_format($listing->$key, 2) : 'N/A' }}
                         </p>
                     </div>
@@ -64,11 +80,11 @@
             </div>
 
             <!-- Business Details -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 @foreach (['category' => 'Category', 'location' => 'Location', 'years_in_business' => 'Years in Business'] as $key => $label)
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ $label }}</label>
-                        <p class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-300 p-3 rounded-lg shadow-sm">
+                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
+                        <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">{{ $label }}</label>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">
                             {{ $listing->$key ?? 'N/A' }}
                         </p>
                     </div>
@@ -76,13 +92,13 @@
             </div>
 
             <!-- Contact Details -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 @foreach (['contact_email' => 'Contact Email', 'phone_number' => 'Phone Number', 'website' => 'Website'] as $key => $label)
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ $label }}</label>
-                        <p class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-300 p-3 rounded-lg shadow-sm">
+                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
+                        <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">{{ $label }}</label>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">
                             @if($key === 'website' && $listing->$key)
-                                <a href="{{ $listing->$key }}" class="text-blue-500 hover:underline" target="_blank">
+                                <a href="{{ $listing->$key }}" class="text-blue-600 hover:underline dark:text-blue-400" target="_blank">
                                     {{ $listing->$key }}
                                 </a>
                             @else
@@ -94,16 +110,16 @@
             </div>
 
             <!-- Business Sections -->
-            <div class="mb-6 mt-8">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-200">Business Sections</h3>
+            <div class="mb-8">
+                <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Business Sections</h3>
                 @php
                     $sections = json_decode($listing->sections ?? '[]', true) ?? [];
                 @endphp
                 @if (!empty($sections))
                     @foreach ($sections as $section)
-                        <div class="mt-4 p-4 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-300 rounded-lg shadow-sm">
+                        <div class="mt-4 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
                             <h4 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ $section['title'] ?? 'Untitled Section' }}</h4>
-                            <p class="text-gray-600 dark:text-gray-400">{{ $section['description'] ?? 'No description available.' }}</p>
+                            <p class="text-gray-600 dark:text-gray-300 mt-2">{{ $section['description'] ?? 'No description available.' }}</p>
                         </div>
                     @endforeach
                 @else
@@ -111,10 +127,10 @@
                 @endif
             </div>
 
-            <!-- Created & Updated Timestamps -->
-            <div class="text-sm text-gray-500 dark:text-gray-400 mt-6">
-                <p>Created on: {{ $listing->created_at->format('M d, Y') }}</p>
-                <p>Last Updated: {{ $listing->updated_at->format('M d, Y') }}</p>
+            <!-- Timestamps -->
+            <div class="text-sm text-gray-500 dark:text-gray-400 mt-6 flex justify-between">
+                <p>📅 Created: {{ $listing->created_at->format('M d, Y') }}</p>
+                <p>🕒 Updated: {{ $listing->updated_at->format('M d, Y') }}</p>
             </div>
         </div>
     </div>
