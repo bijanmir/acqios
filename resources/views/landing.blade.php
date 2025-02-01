@@ -1,6 +1,6 @@
 <x-guest-layout>
     <!-- 🌟 Hero Section -->
-    <div class="h-[60vh] bg-gradient-to-r from-blue-500 to-purple-600 flex flex-col justify-center items-center text-center text-white px-6">
+    <div class="h-[60vh] bg-gradient-to-r from-blue-500 to-purple-600 flex flex-col justify-center items-center text-center text-white px-6 bg-cover" style="background-image: url('/images/sd_skyline.jpg')">
         <h1 class="text-5xl font-bold">Buy & Sell Businesses with Ease</h1>
         <p class="mt-4 text-lg">The leading marketplace for entrepreneurs looking to buy or sell businesses securely.</p>
         <a href="{{ route('register') }}" class="mt-6 px-8 py-3 bg-white text-blue-600 font-semibold rounded-lg shadow-lg hover:bg-gray-200 transition">

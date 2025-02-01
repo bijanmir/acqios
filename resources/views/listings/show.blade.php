@@ -3,6 +3,11 @@
         <div class="flex justify-between items-center">
             <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200">
                 {{ $listing->title }}
+                @if($listing->is_verified)
+                    <div class="bg-black w-10">
+                        <img src="/images/icon" alt="">
+                    </div>
+                @endif
             </h2>
             @auth
                 @if(auth()->user()->id === $listing->user_id)

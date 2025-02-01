@@ -33,7 +33,8 @@ class Listing extends Model
         'featured',
         'video_url',
         'images',
-        'sections'
+        'sections',
+        'is_verified',
     ];
 
     /**
@@ -49,6 +50,7 @@ class Listing extends Model
         'employees' => 'integer',
         'views' => 'integer',
         'featured' => 'boolean',
+        'is_verified' => 'boolean',
     ];
 
     /**
