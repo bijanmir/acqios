@@ -1,3 +1,27 @@
+<!-- Contact Modal (Hidden by Default) -->
+<div id="contactModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center hidden z-50">
+    <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg max-w-md w-full border border-gray-300 dark:border-gray-700">
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Confirm Message</h3>
+
+        <p class="text-gray-600 dark:text-gray-400 mb-6">
+            Are you sure you want to message the listing owner? They will receive a notification with your request.
+        </p>
+
+        <!-- Buttons -->
+        <div class="flex justify-end space-x-3">
+            <button onclick="closeModal()"
+                    class="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg shadow-md hover:bg-gray-400 transition">
+                Cancel
+            </button>
+
+            <button onclick="closeModal()" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition">
+                Message Owner
+            </button>
+
+        </div>
+    </div>
+</div>
+
 <x-app-layout>
     <x-slot name="header">
         <!-- Header Section: Title + Verified Badge + Buttons -->
@@ -5,18 +29,37 @@
             <!-- Title & Verified Badge -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-3 sm:justify-between w-full">
 
-                <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 leading-tight text-center">
-                    {{ $listing->title }}
-                </h2>
+                <div class="relative flex w-full justify-center">
 
-                @if($listing->is_verified)
-                    <span class=" flex items-center bg-green-600 w-fit mx-auto px-4 py-2 my-2 rounded-full text-white shadow-md">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        Verified
-                    </span>
-                @endif
+                    <h2 class="flex items-center text-3xl    font-bold text-gray-900 dark:text-gray-100 leading-tight text-center">
+                        {{ $listing->title }}
+                        @if($listing->is_verified)
+                            <div class="w-7 h-7 ml-2">
+                                <img src="/images/icons/icons8-verified-96.png" alt="">
+                            </div>
+                        @endif
+                    </h2>
+                </div>
+
+                <!-- Action Buttons -->
+                @auth
+                    @if(auth()->user()->id === $listing->user_id)
+                        <a href="{{ route('listings.edit', $listing) }}"
+                           class="px-4 py-2 whitespace-nowrap bg-amber-600 text-white rounded-lg shadow-md hover:bg-amber-700 focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition duration-300 text-center sm:w-auto w-full font-bold">
+                            Edit Listing
+                        </a>
+                    @else
+                        <button onclick="openModal()" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 text-center sm:w-auto w-full">
+                            Message Owner
+                        </button>
+                    @endif
+                @else
+                    <a href="{{ route('login') }}"
+                       class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 text-center sm:w-auto w-full">
+                        Login to Contact
+                    </a>
+                @endauth
+
             </div>
 
         </div>
@@ -27,6 +70,7 @@
 
     <!-- Main Content -->
     <div class="py-6 md:py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+
         <div class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 border border-gray-200 dark:border-gray-700">
 
             <!-- Image Gallery -->
@@ -37,24 +81,7 @@
                 @endphp
                 <div class="mb-8">
                     <div class="mb-5 flex justify-end">
-                        <!-- Action Buttons -->
-                        @auth
-                            @if(auth()->user()->id === $listing->user_id)
-                                <a href="{{ route('listings.edit', $listing) }}"
-                                   class="px-4 py-2 w-fit bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 text-center sm:w-auto w-full">
-                                    <i class="fa fa-pencil"></i>
-                                </a>
-                            @else
-                                <a href="#" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 text-center sm:w-auto w-full">
-                                    Message Owner
-                                </a>
-                            @endif
-                        @else
-                            <a href="{{ route('login') }}"
-                               class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 text-center sm:w-auto w-full">
-                                Login to Contact
-                            </a>
-                        @endauth
+
                     </div>
                     <div class="flex overflow-x-auto space-x-4 pb-4 snap-x snap-mandatory">
                         @foreach($images as $image)
@@ -134,4 +161,21 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('contactModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('contactModal').classList.add('hidden');
+        }
+
+        function sendMessage() {
+            alert("Your message request has been sent to the listing owner!");
+            // Here you can add AJAX request or any other backend logic
+        }
+    </script>
+
 </x-app-layout>
+
