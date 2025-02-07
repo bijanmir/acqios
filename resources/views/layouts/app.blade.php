@@ -10,18 +10,21 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+          integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased">
-<div class="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
+<body class="font-sans antialiased bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100">
+<div class="flex flex-col min-h-screen">
     @include('layouts.navigation')
 
-    <!-- Page Heading -->
+    <!-- Page Heading (Sticky Header with Glassmorphism) -->
     @isset($header)
-        <header class="bg-white dark:bg-gray-800 shadow">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <header class="sticky top-0 z-20 bg-white/60 dark:bg-gray-800/60 shadow-md backdrop-blur-md border-b border-white/40 dark:border-gray-700">
+            <div class="max-w-7xl mx-auto p-4 sm:px-6 lg:px-8">
                 {{ $header }}
             </div>
         </header>
@@ -29,25 +32,26 @@
 
     <!-- Page Content -->
     <main class="flex-grow">
-        {{ $slot }}
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            {{ $slot }}
+        </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="py-4 bg-gray-100 dark:bg-gray-800 text-center">
-        <p class="text-sm text-gray-600 dark:text-gray-300">
-            &copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.
-        </p>
-        <p class="text-xs text-gray-500 dark:text-gray-400">
-            Last Updated:
-            @php
-                $lastUpdatedFile = storage_path('logs/last_updated.log');
-                echo file_exists($lastUpdatedFile) ? file_get_contents($lastUpdatedFile) : 'Not Available';
-            @endphp
-        </p>
+    <!-- Footer (Glassmorphic Style) -->
+    <footer class="py-4 bg-white/60 dark:bg-gray-800/60 text-center backdrop-blur-md border-t border-white/40 dark:border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-sm text-gray-600 dark:text-gray-300">
+                © {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+                Last Updated:
+                @php
+                    $lastUpdatedFile = storage_path('logs/last_updated.log');
+                    echo file_exists($lastUpdatedFile) ? file_get_contents($lastUpdatedFile) : 'Not Available';
+                @endphp
+            </p>
+        </div>
     </footer>
-
-
-
 </div>
 </body>
 </html>

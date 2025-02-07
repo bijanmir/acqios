@@ -218,8 +218,54 @@ class ListingsController extends Controller
         return redirect()->route('dashboard')->with('success', 'Listing deleted successfully!');
     }
 
-    public function index(){
-        $listings = Listing::all();
-        return view('listings.index', compact('listings'));
+    public function index(Request $request)
+    {
+        $query = Listing::query();
+
+        // 🔍 Search Query
+        if ($request->filled('search')) {
+            $query->where('title', 'LIKE', '%' . $request->search . '%')
+                ->orWhere('description', 'LIKE', '%' . $request->search . '%')
+                ->orWhere('location', 'LIKE', '%' . $request->search . '%');
+        }
+
+        // 🏷️ Filter by Category
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+
+        // 💰 Filter by Price Range
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', $request->min_price);
+        }
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        switch ($request->sort) {
+            case 'latest':
+                $query->orderBy('created_at', 'desc');
+                break;
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'price_low':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_high':
+                $query->orderBy('price', 'desc');
+                break;
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        // Fetch Listings
+        $listings = $query->latest()->get();
+        $categories = Listing::distinct()->pluck('category');
+
+        return view('listings.index', compact('listings', 'categories'));
     }
+
+
 }

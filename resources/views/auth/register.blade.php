@@ -61,10 +61,10 @@
                 <!-- Social Login (Optional) -->
                 <div class="flex justify-center space-x-4">
                     <a href="#" class="flex items-center px-4 py-2 border rounded-lg shadow-sm text-gray-600 hover:bg-gray-200 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
-                        <img src="/images/google-logo.svg" class="h-5 w-5 mr-2"> Google
+                        <i class="fa-brands fa-google mr-2"></i> Google
                     </a>
                     <a href="#" class="flex items-center px-4 py-2 border rounded-lg shadow-sm text-gray-600 hover:bg-gray-200 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
-                        <img src="/images/github-logo.svg" class="h-5 w-5 mr-2"> GitHub
+                        <i class="fa-brands fa-github mr-2"></i> Github
                     </a>
                 </div>
             </form>

@@ -22,6 +22,30 @@
     </div>
 </div>
 
+<div class="fixed bottom-0 z-10 w-full bg-gray-50 rounded-t-md border md:hidden">
+    <!-- Action Buttons -->
+    @auth
+        <div class="flex m-5 sm:m-0">
+            @if(auth()->user()->id === $listing->user_id)
+                <a href="{{ route('listings.edit', $listing) }}"
+                   class="px-4 py-2 whitespace-nowrap bg-amber-600 text-white rounded-lg shadow-md hover:bg-amber-700 focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition duration-300 text-center sm:w-auto w-full font-bold">
+                    Edit Listing
+                </a>
+            @else
+                <button onclick="openModal()" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 text-center sm:w-auto w-full">
+                    Message Owner
+                </button>
+            @endif
+        </div>
+
+    @else
+        <a href="{{ route('login') }}"
+           class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 text-center sm:w-auto w-full">
+            Login to Contact
+        </a>
+    @endauth
+</div>
+
 <x-app-layout>
     <x-slot name="header">
         <!-- Header Section: Title + Verified Badge + Buttons -->
@@ -29,38 +53,44 @@
             <!-- Title & Verified Badge -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-3 sm:justify-between w-full">
 
-                <div class="relative flex w-full justify-center">
-
-                    <h2 class="flex items-center text-3xl    font-bold text-gray-900 dark:text-gray-100 leading-tight text-center">
+                <div class="flex flex-col justify-center  items-center space-y-2">
+                    <h2 class="text-2xl mx-2 text-center">
                         {{ $listing->title }}
-                        @if($listing->is_verified)
-                            <div class="w-7 h-7 ml-2">
-                                <img src="/images/icons/icons8-verified-96.png" alt="">
-                            </div>
-                        @endif
-                    </h2>
-                </div>
 
+                    </h2>
+                    @if($listing->is_verified)
+                        <div class="flex items-center bg-gray-100 font-bold border bg-opacity-80 shadow-md dark:text-white px-2 rounded-full py-1 ">
+                            <img class="w-7 h-7 " src="/images/icons/icons8-verified-96.png" alt=""><span class="ml-1">Verified</span>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="hidden md:flex">
                 <!-- Action Buttons -->
                 @auth
-                    @if(auth()->user()->id === $listing->user_id)
-                        <a href="{{ route('listings.edit', $listing) }}"
-                           class="px-4 py-2 whitespace-nowrap bg-amber-600 text-white rounded-lg shadow-md hover:bg-amber-700 focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition duration-300 text-center sm:w-auto w-full font-bold">
-                            Edit Listing
-                        </a>
-                    @else
-                        <button onclick="openModal()" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 text-center sm:w-auto w-full">
-                            Message Owner
-                        </button>
-                    @endif
+                    <div class="flex m-5 sm:m-0">
+                        @if(auth()->user()->id === $listing->user_id)
+                            <a href="{{ route('listings.edit', $listing) }}"
+                               class="px-4 py-2 whitespace-nowrap bg-amber-600 text-white rounded-lg shadow-md hover:bg-amber-700 focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition duration-300 text-center sm:w-auto w-full font-bold">
+                                Edit Listing
+                            </a>
+                        @else
+                            <button onclick="openModal()" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 text-center sm:w-auto w-full">
+                                Message Owner
+                            </button>
+                        @endif
+                    </div>
+
                 @else
                     <a href="{{ route('login') }}"
                        class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 text-center sm:w-auto w-full">
                         Login to Contact
                     </a>
                 @endauth
-
             </div>
+
+
 
         </div>
     </x-slot>
@@ -69,9 +99,9 @@
 
 
     <!-- Main Content -->
-    <div class="py-6 md:py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div class="md:py-6 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
-        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 border border-gray-200 dark:border-gray-700">
+        <div class="bg-white dark:bg-gray-800 shadow-lg md:rounded-2xl p-3 md:p-8 border border-gray-200 dark:border-gray-700">
 
             <!-- Image Gallery -->
             @if(!empty($listing->images))
@@ -80,31 +110,16 @@
                     $images = is_array($images) ? $images : [];
                 @endphp
                 <div class="mb-8">
-                    <div class="mb-5 flex justify-end">
-
-                    </div>
                     <div class="flex overflow-x-auto space-x-4 pb-4 snap-x snap-mandatory">
                         @foreach($images as $image)
                             @if(is_string($image) && !empty($image))
                                 <img src="{{ asset($image) }}" alt="Listing Image"
-                                     class="h-64 w-full object-cover rounded-xl shadow-md border dark:border-gray-700 snap-center transition-transform hover:scale-105 aspect-w-16 aspect-h-9 relative">
+                                     class=" w-full object-cover rounded-xl shadow-md border dark:border-gray-700 snap-center transition-transform hover:scale-105 aspect-w-16 aspect-h-9 relative">
                             @endif
                         @endforeach
                     </div>
                 </div>
             @endif
-
-            <!-- Listing Details -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                @foreach (['price' => 'Price', 'revenue' => 'Revenue', 'profit' => 'Profit'] as $key => $label)
-                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
-                        <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">{{ $label }}</label>
-                        <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                            {{ $listing->$key ? '$' . number_format($listing->$key, 2) : 'N/A' }}
-                        </p>
-                    </div>
-                @endforeach
-            </div>
 
             <!-- Business Details -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -117,6 +132,19 @@
                     </div>
                 @endforeach
             </div>
+            <!-- Listing Details -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                @foreach (['price' => 'Price', 'revenue' => 'Revenue', 'profit' => 'Profit'] as $key => $label)
+                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
+                        <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">{{ $label }}</label>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                            {{ $listing->$key ? '$' . number_format($listing->$key, 2) : 'N/A' }}
+                        </p>
+                    </div>
+                @endforeach
+            </div>
+
+
 
             <!-- Contact Details -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
