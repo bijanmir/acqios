@@ -45,7 +45,7 @@
             </div>
 
             <!-- 🎚️ Filters Section -->
-            <div id="filters" class="hidden p-6 my-4 rounded-2xl bg-white/40 dark:bg-gray-900/40 backdrop-blur-2xl shadow-md transition-all duration-300 transform scale-95 opacity-0 border">
+            <div id="filters" class="hidden p-6 my-4 rounded-2xl bg-white/40 dark:bg-gray-900/40 backdrop-blur-2xl shadow-md transition-all duration-300 transform scale-95 opacity-0 border dark:border-gray-700">
                 <h2 class="text-center text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Filters</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <!-- 📂 Category -->
@@ -78,7 +78,7 @@
     </x-slot>
 
     <!-- 📦 Listings Container -->
-    <div id="listingsContainer" class="container mx-auto">
+    <div id="listingsContainer" class="container mx-auto p-5">
         @include('listings.partials.listings')
     </div>
 

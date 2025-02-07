@@ -3,7 +3,7 @@
 @else
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach ($listings as $listing)
-            <a href="{{ route('listings.show', $listing->id) }}" class="group block transform transition-all hover:scale-[1.02] rounded-3xl overflow-hidden border shadow-xl">
+            <a href="{{ route('listings.show', $listing->id) }}" class="group block transform transition-all hover:scale-[1.02] rounded-3xl overflow-hidden border dark:border-gray-600 dark:hover:border-gray-400 shadow-xl">
                 <div class="relative p-6 bg-white/60 dark:bg-gray-900/60 rounded-3xl shadow-lg hover:shadow-2xl border border-gray-200/50 dark:border-gray-800/50 flex flex-col justify-between h-full backdrop-blur-md">
 
                     <!-- Verified Badge -->

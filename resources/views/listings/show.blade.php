@@ -22,13 +22,13 @@
     </div>
 </div>
 
-<div class="fixed bottom-0 z-10 w-full bg-gray-50 rounded-t-md border md:hidden">
+<div class="fixed bottom-0 z-10 w-full bg-gray-50 dark:bg-gray-900 dark:border-gray-800 rounded-t-md border md:hidden">
     <!-- Action Buttons -->
     @auth
         <div class="flex m-5 sm:m-0">
             @if(auth()->user()->id === $listing->user_id)
                 <a href="{{ route('listings.edit', $listing) }}"
-                   class="px-4 py-2 whitespace-nowrap bg-amber-600 text-white rounded-lg shadow-md hover:bg-amber-700 focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition duration-300 text-center sm:w-auto w-full font-bold">
+                   class="px-4 py-2 whitespace-nowrap bg-sky-600 text-white rounded-lg shadow-md hover:bg-sky-700 focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition duration-300 text-center sm:w-auto w-full font-bold">
                     Edit Listing
                 </a>
             @else
@@ -53,13 +53,13 @@
             <!-- Title & Verified Badge -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-3 sm:justify-between w-full">
 
-                <div class="flex flex-col justify-center  items-center space-y-2">
+                <div class="flex flex-col md:flex-row justify-center  items-center space-y-2">
                     <h2 class="text-2xl mx-2 text-center">
                         {{ $listing->title }}
 
                     </h2>
                     @if($listing->is_verified)
-                        <div class="flex items-center bg-gray-100 font-bold border bg-opacity-80 shadow-md dark:text-white px-2 rounded-full py-1 ">
+                        <div class="flex items-center bg-gray-100  dark:border-gray-500 dark:bg-gray-800 font-bold border bg-opacity-80 shadow-md dark:text-white px-2 rounded-full py-1 ">
                             <img class="w-7 h-7 " src="/images/icons/icons8-verified-96.png" alt=""><span class="ml-1">Verified</span>
                         </div>
                     @endif
@@ -72,7 +72,7 @@
                     <div class="flex m-5 sm:m-0">
                         @if(auth()->user()->id === $listing->user_id)
                             <a href="{{ route('listings.edit', $listing) }}"
-                               class="px-4 py-2 whitespace-nowrap bg-amber-600 text-white rounded-lg shadow-md hover:bg-amber-700 focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition duration-300 text-center sm:w-auto w-full font-bold">
+                               class="px-4 py-2 whitespace-nowrap bg-sky-600 text-white rounded-lg shadow-md hover:bg-sky-700 focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition duration-300 text-center sm:w-auto w-full font-bold">
                                 Edit Listing
                             </a>
                         @else
@@ -89,9 +89,6 @@
                     </a>
                 @endauth
             </div>
-
-
-
         </div>
     </x-slot>
 
@@ -114,7 +111,7 @@
                         @foreach($images as $image)
                             @if(is_string($image) && !empty($image))
                                 <img src="{{ asset($image) }}" alt="Listing Image"
-                                     class=" w-full object-cover rounded-xl shadow-md border dark:border-gray-700 snap-center transition-transform hover:scale-105 aspect-w-16 aspect-h-9 relative">
+                                     class="h-96 w-full object-cover rounded-xl shadow-md border dark:border-gray-700 snap-center transition-transform hover:scale-105 aspect-w-16 aspect-h-9 relative">
                             @endif
                         @endforeach
                     </div>
@@ -166,11 +163,12 @@
 
             <!-- Business Sections -->
             <div class="mb-8">
-                <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Business Sections</h3>
                 @php
                     $sections = json_decode($listing->sections ?? '[]', true) ?? [];
                 @endphp
                 @if (!empty($sections))
+                    <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Business Sections</h3>
+
                     @foreach ($sections as $section)
                         <div class="mt-4 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
                             <h4 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ $section['title'] ?? 'Untitled Section' }}</h4>
@@ -183,7 +181,7 @@
             </div>
 
             <!-- Timestamps -->
-            <div class="text-sm text-gray-500 dark:text-gray-400 mt-6 flex justify-between">
+            <div class="text-sm text-gray-500 dark:text-gray-400 mt-6 flex justify-between p-2 ">
                 <p>📅 Created: {{ $listing->created_at->format('M d, Y') }}</p>
                 <p>🕒 Updated: {{ $listing->updated_at->format('M d, Y') }}</p>
             </div>
