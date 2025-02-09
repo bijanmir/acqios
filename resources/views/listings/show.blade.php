@@ -40,8 +40,8 @@
 
     @else
         <a href="{{ route('login') }}"
-           class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 text-center sm:w-auto w-full">
-            Login to Contact
+           class="flex w-full justify-center items-center text-lg p-5 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300">
+            <span> Login to Contact</span> <i class="fa fa-arrow-right"></i>
         </a>
     @endauth
 </div>
@@ -59,7 +59,7 @@
             <!-- Title & Verified Badge -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-3 sm:justify-between w-full">
 
-                <div class="flex flex-col md:flex-row justify-center  items-center space-y-2">
+                <div class="flex flex-col md:flex-row justify-center items-center space-y-2">
                     <h2 class="text-2xl mx-2 text-center">
                         {{ $listing->title }}
 
@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <div class="hidden md:flex">
+            <div class="hidden md:flex items-center">
                 <!-- Action Buttons -->
                 @auth
                     <div class="flex m-5 sm:m-0">
@@ -90,8 +90,8 @@
 
                 @else
                     <a href="{{ route('login') }}"
-                       class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 text-center sm:w-auto w-full">
-                        Login to Contact
+                       class="whitespace-nowrap flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 text-center sm:w-auto w-full">
+                       <span>Login to Contact</span> <i class="fa fa-arrow-right"></i>
                     </a>
                 @endauth
             </div>
