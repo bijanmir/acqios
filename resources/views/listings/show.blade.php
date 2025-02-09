@@ -45,14 +45,14 @@
         </a>
     @endauth
 </div>
-
+@php
+    $ogTitle = $listing->title;
+    $ogDescription = $listing->description ?? 'Check out this listing!';
+    $images = json_decode($listing->images, true) ?? [];
+    $ogImage = !empty($images) ? asset(reset($images)) : asset('default-preview.jpg');
+@endphp
 <x-app-layout :ogTitle="$ogTitle" :ogDescription="$ogDescription" :ogImage="$ogImage">
-    @php
-        $ogTitle = $listing->title;
-        $ogDescription = $listing->description ?? 'Check out this listing!';
-        $images = json_decode($listing->images, true) ?? [];
-        $ogImage = !empty($images) ? asset(reset($images)) : asset('default-preview.jpg');
-    @endphp
+
     <x-slot name="header">
         <!-- Header Section: Title + Verified Badge + Buttons -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
