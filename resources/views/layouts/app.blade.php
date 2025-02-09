@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!-- Open Graph Meta Tags for Social Media Previews -->
+    <meta property="og:title" content="{{ $ogTitle ?? config('app.name', 'Laravel') }}">
+    <meta property="og:description" content="{{ $ogDescription ?? 'Discover amazing listings on our platform.' }}">
+    <meta property="og:image" content="{{ $ogImage ?? asset('default-preview.jpg') }}">
+    <meta property="og:url" content="{{ request()->url() }}">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card for Twitter Previews -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $ogTitle ?? config('app.name', 'Laravel') }}">
+    <meta name="twitter:description" content="{{ $ogDescription ?? 'Discover amazing listings on our platform.' }}">
+    <meta name="twitter:image" content="{{ $ogImage ?? asset('default-preview.jpg') }}">
+
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
