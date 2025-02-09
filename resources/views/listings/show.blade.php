@@ -176,7 +176,7 @@
                         </div>
                     @endforeach
                 @else
-                    <p class="text-gray-500 dark:text-gray-400">No sections available.</p>
+                    <div id="no-sections"></div>
                 @endif
             </div>
 

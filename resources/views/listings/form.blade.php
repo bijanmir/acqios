@@ -109,23 +109,34 @@
                 <!-- Business Sections -->
                 <div class="mb-8">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Business Sections</h3>
+
                     <div id="sections-container">
                         @foreach (json_decode($listing->sections ?? '[]', true) ?? [] as $section)
-                            <div class="section-entry bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-md border border-gray-300 dark:border-gray-700 mb-4">
+                            <div data-uuid="{{ $section['id']  }}" class="section-entry relative bg-white/30 dark:bg-gray-900/30 backdrop-blur-xl p-4 rounded-xl shadow-md border border-white/40 dark:border-gray-700 mb-4 transition-all">
                                 <input type="hidden" name="sections[{{ $section['id'] }}][id]" value="{{ $section['id'] }}">
+
+                                <!-- Delete Button -->
+                                <button type="button" onclick="removeSection('{{ $section['id'] }}', this)"
+                                        class="absolute top-2 right-2 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-bold px-3 py-1 rounded-full bg-white/40 dark:bg-gray-800/40 shadow-md transition-all hover:scale-110">
+                                    ✕
+                                </button>
+
                                 <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Title</label>
                                 <input type="text" name="sections[{{ $section['id'] }}][title]"
-                                       class="w-full rounded-lg bg-gray-100 dark:bg-gray-700 p-3 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500"
+                                       class="w-full rounded-lg bg-white/20 dark:bg-gray-800/30 text-gray-900 dark:text-white p-3 border border-white/30 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 shadow-md transition-all backdrop-blur-lg"
                                        value="{{ $section['title'] }}" required>
+
                                 <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mt-2">Description</label>
                                 <textarea name="sections[{{ $section['id'] }}][description]" rows="2"
-                                          class="w-full rounded-lg bg-gray-100 dark:bg-gray-700 p-3 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500"
+                                          class="w-full rounded-lg bg-white/20 dark:bg-gray-800/30 text-gray-900 dark:text-white p-3 border border-white/30 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 shadow-md transition-all backdrop-blur-lg"
                                           required>{{ $section['description'] }}</textarea>
                             </div>
                         @endforeach
                     </div>
+
+                    <!-- Add Section Button -->
                     <button type="button" onclick="addSection()"
-                            class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                            class="mt-2 px-4 py-2 bg-blue-500/80 dark:bg-blue-600/80 hover:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-xl shadow-lg backdrop-blur-md transition-all duration-300 transform hover:scale-105">
                         + Add Section
                     </button>
                 </div>
@@ -141,3 +152,65 @@
         </button>
     </div>
 </x-app-layout>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let deletedSectionsInput = document.getElementById("deleted_sections");
+        let deletedSections = [];
+
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        function addSection() {
+            let container = document.getElementById("sections-container");
+            let uuid = generateUUID();
+
+            let div = document.createElement("div");
+            div.classList.add("section-entry", "relative", "bg-white/30", "dark:bg-gray-900/30", "backdrop-blur-xl", "p-4", "rounded-xl", "shadow-md", "border", "border-white/40", "dark:border-gray-700", "mb-4", "transition-all");
+            div.setAttribute("data-uuid", uuid);
+
+            div.innerHTML = `
+            <input type="hidden" name="sections[${uuid}][id]" value="${uuid}">
+
+            <!-- Delete Button -->
+            <button type="button" onclick="removeSection('${uuid}', this)"
+                    class="absolute top-2 right-2 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-bold px-3 py-1 rounded-full bg-white/40 dark:bg-gray-800/40 shadow-md transition-all hover:scale-110">
+                ✕
+            </button>
+
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Title</label>
+            <input type="text" name="sections[${uuid}][title]" placeholder="Section Title"
+                   class="w-full rounded-lg bg-white/20 dark:bg-gray-800/30 text-gray-900 dark:text-white p-3 border border-white/30 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 shadow-md transition-all backdrop-blur-lg"
+                   required>
+
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mt-2">Description</label>
+            <textarea name="sections[${uuid}][description]" placeholder="Section Description"
+                      class="w-full rounded-lg bg-white/20 dark:bg-gray-800/30 text-gray-900 dark:text-white p-3 border border-white/30 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 shadow-md transition-all backdrop-blur-lg"
+                      rows="3" required></textarea>
+        `;
+
+            container.appendChild(div);
+        }
+
+        function removeSection(uuid, button) {
+            let section = button.closest(".section-entry");
+            if (section) {
+                section.classList.add("opacity-0", "scale-95");
+
+                setTimeout(() => {
+                    section.remove();
+                    deletedSections.push(uuid);
+                    deletedSectionsInput.value = JSON.stringify(deletedSections);
+                }, 200);
+            }
+        }
+
+        window.addSection = addSection;
+        window.removeSection = removeSection;
+    });
+
+</script>
