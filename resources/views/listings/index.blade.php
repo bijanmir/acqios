@@ -3,35 +3,38 @@
         <!-- Glassmorphic Search Bar & Filters -->
         <form id="searchForm" action="{{ route('listings.index') }}" method="GET" class="relative flex flex-col rounded-b-lg bg-white/20 dark:bg-gray-900/20  transition-all duration-300 ">
             <!-- 🔍 Search Input + Icon -->
-            <div class="relative flex items-center w-full">
-                <input type="text" name="search" id="searchInput"
-                       value="{{ request('search') }}" autocomplete="off"
-                       placeholder="Search listings..."
-                       class="w-full pl-12 pr-16 py-4 bg-white/30 dark:bg-gray-800/30 text-gray-900 dark:text-white border border-white/40 dark:border-gray-600/50 rounded-full focus:ring-2 focus:ring-blue-500/75 focus:outline-none transition-all shadow-xl placeholder-gray-400 dark:placeholder-gray-500">
-                <!-- Search Icon -->
-                <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-300">
+            <div class="flex flex-col md:flex-row">
+                <div class="relative flex items-center w-full">
+                    <input type="text" name="search" id="searchInput"
+                           value="{{ request('search') }}" autocomplete="off"
+                           placeholder="Search listings..."
+                           class="w-full pl-12 pr-16 py-4 bg-white/30 dark:bg-gray-800/30 text-gray-900 dark:text-white border border-white/40 dark:border-gray-600/50 rounded-full focus:ring-2 focus:ring-blue-500/75 focus:outline-none transition-all shadow-xl placeholder-gray-400 dark:placeholder-gray-500">
+                    <!-- Search Icon -->
+                    <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-300">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                          xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.35-4.35"></path>
                     </svg>
                 </span>
+                </div>
+
+                <!-- 🔘 Buttons: Search & Toggle Filters -->
+                <div class="flex justify-center items-center space-x-4 pt-4 md:pt-0">
+                    <!-- Search Button -->
+                    <button type="submit"
+                            class="flex items-center justify-center px-6 py-3 bg-blue-500/80 hover:bg-blue-700/90 text-white rounded-full shadow-md transition-all transform hover:scale-105">
+                        <span class="mr-2"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <span>Search</span>
+                    </button>
+                    <!-- Filters Toggle Button -->
+                    <button type="button" id="toggleFilters"
+                            class="flex items-center justify-center px-6 py-3 bg-gray-200/60 dark:bg-gray-800/60 text-gray-900 dark:text-white rounded-full shadow-md transition-all transform hover:scale-105 hover:bg-gray-300/70 dark:hover:bg-gray-700/70">
+                        <span id="filterIcon" class="whitespace-nowrap flex space">🔽 &nbsp Filters</span>
+                    </button>
+                </div>
             </div>
 
-            <!-- 🔘 Buttons: Search & Toggle Filters -->
-            <div class="flex justify-center space-x-4 pt-4">
-                <!-- Search Button -->
-                <button type="submit"
-                        class="flex items-center justify-center px-6 py-3 bg-blue-500/80 hover:bg-blue-700/90 text-white rounded-full shadow-md transition-all transform hover:scale-105">
-                    <span class="mr-2"><i class="fa-solid fa-magnifying-glass"></i></span>
-                    <span>Search</span>
-                </button>
-                <!-- Filters Toggle Button -->
-                <button type="button" id="toggleFilters"
-                        class="flex items-center justify-center px-6 py-3 bg-gray-200/60 dark:bg-gray-800/60 text-gray-900 dark:text-white rounded-full shadow-md transition-all transform hover:scale-105 hover:bg-gray-300/70 dark:hover:bg-gray-700/70">
-                    <span id="filterIcon">🔽 Filters</span>
-                </button>
-            </div>
 
             <!-- ❌ Clear Filters Button (Only Visible if Filters are Applied) -->
             <div class="flex justify-center ">
@@ -95,14 +98,14 @@
                     filters.classList.remove("opacity-0", "scale-95");
                     filters.classList.add("opacity-100", "scale-100");
                 }, 10);
-                icon.innerHTML = "🔼 Filters";
+                icon.innerHTML = "🔼 &nbsp Filters";
             } else {
                 filters.classList.add("opacity-0", "scale-95");
                 filters.classList.remove("opacity-100", "scale-100");
                 setTimeout(() => {
                     filters.classList.add("hidden");
                 }, 300);
-                icon.innerHTML = "🔽 Filters";
+                icon.innerHTML = "🔽 &nbsp Filters";
             }
         });
 
