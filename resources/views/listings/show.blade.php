@@ -51,7 +51,11 @@
     $images = json_decode($listing->images, true) ?? [];
     $ogImage = !empty($images) ? asset(reset($images)) : asset('default-preview.jpg');
 @endphp
-<x-app-layout :ogTitle="$ogTitle" :ogDescription="$ogDescription" :ogImage="$ogImage">
+<x-app-layout
+    :ogTitle="$ogTitle"
+    :ogDescription="$ogDescription"
+    :ogImage="$ogImage"
+>
 
     <x-slot name="header">
         <!-- Header Section: Title + Verified Badge + Buttons -->

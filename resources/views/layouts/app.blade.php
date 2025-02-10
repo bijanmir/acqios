@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+@props(['ogTitle' => config('app.name', 'Laravel'), 'ogDescription' => 'Discover amazing listings on our platform.', 'ogImage' => asset('default-preview.jpg')])
+
+    <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -18,24 +20,22 @@
     <meta name="twitter:description" content="{{ $ogDescription ?? 'Discover amazing listings on our platform.' }}">
     <meta name="twitter:image" content="{{ $ogImage ?? asset('default-preview.jpg') }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <!-- Ensure the Title Updates -->
+    <title>{{ $ogTitle ?? config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-          integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-          crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
-
-    <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+
+
 <body class="font-sans antialiased bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100">
 <div class="flex flex-col min-h-screen">
     @include('layouts.navigation')
-
     <!-- Page Heading (Sticky Header with Glassmorphism) -->
     @isset($header)
         <header class="sticky top-0 z-20 bg-white/60 dark:bg-gray-800/60 shadow-md backdrop-blur-md border-b border-white/40 dark:border-gray-700">
