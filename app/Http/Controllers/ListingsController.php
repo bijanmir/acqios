@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContactOwnerMail;
 use App\Models\Listing;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 
 class ListingsController extends Controller
 {
@@ -267,5 +269,26 @@ class ListingsController extends Controller
         return view('listings.index', compact('listings', 'categories'));
     }
 
+
+    public function contactOwner(Request $request, Listing $listing): \Illuminate\Http\RedirectResponse
+    {
+        $sender = auth()->user();
+
+        Log::info("The email is {$listing->user->email} !");
+
+
+
+        if (!$sender) {
+            return back()->with('error', 'You must be logged in to send a message.');
+        }
+
+        try {
+            Mail::to($listing->user->email)->send(new ContactOwnerMail($listing, $sender));
+            return back()->with('success', 'Your message has been sent to the listing owner.');
+        } catch (\Exception $e) {
+            Log::error('Email sending failed: ' . $e->getMessage());
+            return back()->with('error', 'There was an error sending your message. Please try again.');
+        }
+    }
 
 }

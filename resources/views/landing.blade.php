@@ -5,7 +5,10 @@
          style="background-image: url('/images/sd_skyline.jpg');">
         <div class="absolute inset-0 bg-black bg-opacity-50 dark:bg-opacity-60"></div> <!-- Dark mode overlay for contrast -->
         <div class="relative z-10">
-            <h1 class="text-6xl sm:text-8xl font-black drop-shadow-xl">Buy & Sell Businesses with Ease</h1>
+            <div class="flex justify-center invert w-full pb-10">
+                <img src="/images/acqios_logo.png" alt="" class="w-24 h-24 ">
+            </div>
+            <h1 class="text-4xl sm:text-8xl font-black drop-shadow-xl">Buy & Sell Businesses with Ease</h1>
             <p class="mt-6 text-xl sm:text-2xl max-w-2xl mx-auto text-gray-200 dark:text-gray-300">
                 The leading marketplace for entrepreneurs looking to buy or sell businesses securely.
             </p>

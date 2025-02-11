@@ -42,6 +42,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/listings/{listing}/edit', [ListingsController::class, 'edit'])->name('listings.edit');
 });
 
+Route::post('/listings/{listing}/contact', [ListingsController::class, 'contactOwner'])
+    ->middleware('auth')
+    ->name('listings.contact');
+
+
 
 
 

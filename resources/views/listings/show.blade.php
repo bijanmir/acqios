@@ -14,9 +14,14 @@
                 Cancel
             </button>
 
-            <button onclick="closeModal()" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition">
-                Message Owner
-            </button>
+            <!-- Message Owner Form -->
+            <form action="{{ route('listings.contact', $listing) }}" method="POST">
+                @csrf
+                <button type="submit"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition">
+                    Message Owner
+                </button>
+            </form>
 
         </div>
     </div>
@@ -45,6 +50,7 @@
         </a>
     @endauth
 </div>
+
 @php
     $ogTitle = $listing->title;
     $ogDescription = $listing->description ?? 'Check out this listing!';
@@ -205,11 +211,6 @@
 
         function closeModal() {
             document.getElementById('contactModal').classList.add('hidden');
-        }
-
-        function sendMessage() {
-            alert("Your message request has been sent to the listing owner!");
-            // Here you can add AJAX request or any other backend logic
         }
     </script>
 
