@@ -8,7 +8,7 @@
     <div class="max-w-7xl mx-auto p-6 sm:px-6 lg:px-8">
         <!-- Header with Action Button -->
         <div class="mb-8 flex flex-col sm:flex-row sm:justify-between items-center space-y-4 md:space-y-0">
-            <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white tracking-wide">Your Listings</h1>
+            <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white tracking-wide">My Listings</h1>
             <a href="{{ route('listings.create') }}"
                class="px-6 py-3 bg-gray-200/80 dark:bg-gray-800/80 text-gray-800 dark:text-gray-200 font-semibold rounded-full shadow-lg hover:shadow-xl hover:bg-gray-300/90 dark:hover:bg-gray-700/90 transition-all duration-300 flex items-center space-x-2 backdrop-blur-lg border border-gray-300/50 dark:border-gray-700/50">
                 <span class="text-lg dark:invert">➕</span>
