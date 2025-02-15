@@ -8,22 +8,24 @@
         </p>
 
         <!-- Buttons -->
-        <div class="flex justify-end space-x-3">
+        <div class="flex justify-center items-center gap-4 mt-4">
+            <!-- Cancel Button -->
             <button onclick="closeModal()"
-                    class="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg shadow-md hover:bg-gray-400 transition">
+                    class="px-4 py-2 w-24 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 focus:ring-2 focus:ring-gray-400 transition">
                 Cancel
             </button>
 
             <!-- Message Owner Form -->
-            <form action="{{ route('listings.contact', $listing) }}" method="POST">
+            <form action="{{ route('listings.contact', $listing) }}" method="POST" class="p-0 m-0">
                 @csrf
                 <button type="submit"
-                        class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition">
-                    Message Owner
+                        class="px-4 py-2 w-24 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-green-400 transition">
+                    Message
                 </button>
             </form>
-
         </div>
+
+
     </div>
 </div>
 
