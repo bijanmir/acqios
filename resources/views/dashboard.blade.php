@@ -10,14 +10,14 @@
         <div class="mb-8 flex flex-col sm:flex-row sm:justify-between items-center space-y-4 md:space-y-0">
             <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white tracking-wide">My Listings</h1>
             <a href="{{ route('listings.create') }}"
-               class="px-6 py-3 bg-gray-200/80 dark:bg-gray-800/80 text-gray-800 dark:text-gray-200 font-semibold rounded-full shadow-lg hover:shadow-xl hover:bg-gray-300/90 dark:hover:bg-gray-700/90 transition-all duration-300 flex items-center space-x-2 backdrop-blur-lg border border-gray-300/50 dark:border-gray-700/50">
+               class="px-6 py-3 bg-gray-200/80 dark:bg-gray-800/80 text-gray-800 dark:text-gray-200 font-semibold rounded-full shadow-lg hover:shadow-xl hover:bg-gray-300/90 dark:hover:bg-gray-700/90 transition-all duration-300 flex items-center space-x-2  border border-gray-300/50 dark:border-gray-700/50">
                 <span class="text-lg dark:invert">➕</span>
                 <span>Create Listing</span>
             </a>
         </div>
 
         @if ($listings->isEmpty())
-            <div class="flex flex-col items-center justify-center h-64 bg-gray-200/70 dark:bg-gray-800/70 rounded-3xl shadow-2xl backdrop-blur-lg p-6 border border-gray-300/50 dark:border-gray-700/50">
+            <div class="flex flex-col items-center justify-center h-64 bg-gray-200/70 dark:bg-gray-800/70 rounded-3xl shadow-2xl  p-6 border border-gray-300/50 dark:border-gray-700/50">
                 <p class="text-center text-base md:text-lg text-gray-700 dark:text-gray-200">
                     You don't have any listings yet.
                     <a href="{{ route('listings.create') }}" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 underline underline-offset-4 transition-colors duration-200">
@@ -29,7 +29,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach ($listings as $listing)
                     <a href="{{ route('listings.show', $listing->id) }}"
-                       class="group block bg-gray-200/70 dark:bg-gray-900/70 backdrop-blur-lg rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:scale-105 border border-gray-300/50 dark:border-gray-700/50 overflow-hidden">
+                       class="group block bg-gray-50 dark:bg-gray-900/70  rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:scale-105 border border-gray-300/50 dark:border-gray-700/50 overflow-hidden">
                         <div class="relative">
                             <!-- Verified Badge -->
                             @if($listing->is_verified)
@@ -63,7 +63,6 @@
                             <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-3 truncate">
                                 {{ $listing->title }}
                             </h2>
-
                             <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-4">
                                 <div class="flex items-center gap-1">
                                     <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">

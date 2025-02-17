@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* Glassmorphic Black Button */
+.button-main {
+    @apply px-6 py-3 text-white font-semibold rounded-xl shadow-lg transition duration-300 transform hover:scale-105;
+    @apply backdrop-blur-lg bg-black/80 border border-white/20;
+}
+
+/* Hover & Focus Effects */
+.button-main:hover {
+    @apply bg-black/50 border-white/30;
+}
+
+.button-main:focus {
+    @apply ring-2 ring-offset-2 ring-white/30;
+}

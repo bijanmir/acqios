@@ -32,14 +32,14 @@
 <div class="fixed bottom-0 z-10 w-full bg-gray-50 dark:bg-gray-900 dark:border-gray-800 rounded-t-md border md:hidden">
     <!-- Action Buttons -->
     @auth
-        <div class="flex m-5 sm:m-0">
+        <div class="flex">
             @if(auth()->user()->id === $listing->user_id)
                 <a href="{{ route('listings.edit', $listing) }}"
-                   class="px-4 py-2 whitespace-nowrap bg-sky-600 text-white rounded-lg shadow-md hover:bg-sky-700 focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition duration-300 text-center sm:w-auto w-full font-bold">
+                   class="button-main w-full text-center">
                     Edit Listing
                 </a>
             @else
-                <button onclick="openModal()" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 text-center sm:w-auto w-full">
+                <button onclick="openModal()" class="button-main w-full text-center">
                     Message Owner
                 </button>
             @endif
@@ -114,7 +114,7 @@
 
 
     <!-- Main Content -->
-    <div class="md:py-6 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="md:py-6 max-w-7xl mx-auto  space-y-6">
 
         <div class="bg-white dark:bg-gray-800 shadow-lg md:rounded-2xl p-3 md:p-8 border border-gray-200 dark:border-gray-700">
 
@@ -138,7 +138,7 @@
 
             <!-- Business Details -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                @foreach (['category' => 'Category', 'location' => 'Location', 'years_in_business' => 'Years in Business'] as $key => $label)
+                @foreach (['category' => 'Category', 'location' => 'Location'] as $key => $label)
                     <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
                         <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">{{ $label }}</label>
                         <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">

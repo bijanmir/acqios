@@ -3,7 +3,7 @@
         <!-- Glassmorphic Search Bar & Filters -->
         <form id="searchForm" action="{{ route('listings.index') }}" method="GET" class="relative flex flex-col rounded-b-lg bg-white/20 dark:bg-gray-900/20  transition-all duration-300 ">
             <!-- 🔍 Search Input + Icon -->
-            <div class="flex flex-col md:flex-row">
+            <div class="flex flex-row space-x-5">
                 <div class="relative flex items-center w-full">
                     <input type="text" name="search" id="searchInput"
                            value="{{ request('search') }}" autocomplete="off"
@@ -20,17 +20,13 @@
                 </div>
 
                 <!-- 🔘 Buttons: Search & Toggle Filters -->
-                <div class="flex justify-center items-center space-x-4 pt-4 md:pt-0">
+                <div class="flex justify-center items-center space-x-4 pt-4 md:pt-0 md:ml-5">
                     <!-- Search Button -->
-                    <button type="submit"
-                            class="flex items-center justify-center px-6 py-3 bg-blue-500/80 hover:bg-blue-700/90 text-white rounded-full shadow-md transition-all transform hover:scale-105">
-                        <span class="mr-2"><i class="fa-solid fa-magnifying-glass"></i></span>
-                        <span>Search</span>
-                    </button>
+                   <button type="submit" class="flex items-center space-x-2 bg-blue-400 p-3 md:px-5 rounded-full text-white font-bold"><i class="fa fa-magnifying-glass"></i> <span class="hidden md:flex">Search</span></button>
                     <!-- Filters Toggle Button -->
                     <button type="button" id="toggleFilters"
-                            class="flex items-center justify-center px-6 py-3 bg-gray-200/60 dark:bg-gray-800/60 text-gray-900 dark:text-white rounded-full shadow-md transition-all transform hover:scale-105 hover:bg-gray-300/70 dark:hover:bg-gray-700/70">
-                        <span id="filterIcon" class="whitespace-nowrap flex space">🔽 &nbsp Filters</span>
+                            class="flex items-center justify-center p-3 bg-gray-200/60 dark:bg-gray-800/60 text-gray-900 dark:text-white rounded-full shadow-md transition-all transform hover:scale-105 hover:bg-gray-300/70 dark:hover:bg-gray-700/70">
+                        <span id="filterIcon" class="whitespace-nowrap flex" >🔽<span class="hidden md:block"> &nbsp Filters</span> </span>
                     </button>
                 </div>
             </div>
@@ -81,7 +77,7 @@
     </x-slot>
 
     <!-- 📦 Listings Container -->
-    <div id="listingsContainer" class="container mx-auto p-5">
+    <div id="listingsContainer" class="container mx-auto py-5 px-5 md:px-0">
         @include('listings.partials.listings')
     </div>
 
@@ -98,14 +94,14 @@
                     filters.classList.remove("opacity-0", "scale-95");
                     filters.classList.add("opacity-100", "scale-100");
                 }, 10);
-                icon.innerHTML = "🔼 &nbsp Filters";
+                icon.innerHTML = `🔼<span class="hidden md:block"> &nbsp Filters</span>`;
             } else {
                 filters.classList.add("opacity-0", "scale-95");
                 filters.classList.remove("opacity-100", "scale-100");
                 setTimeout(() => {
                     filters.classList.add("hidden");
                 }, 300);
-                icon.innerHTML = "🔽 &nbsp Filters";
+                icon.innerHTML = `🔽<span class="hidden md:block"> &nbsp Filters</span>`;
             }
         });
 

@@ -18,8 +18,8 @@
                 @if(isset($listing))
                     <!-- Delete Button (Triggers Confirmation Modal) -->
                     <button type="button" onclick="showDeleteModal()"
-                            class="px-5 py-3 bg-red-700 text-white rounded-lg shadow-md hover:bg-red-800 focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-300 font-bold">
-                        Delete
+                            class="flex items-center space-x-3 px-5 py-3 bg-red-700 text-white rounded-lg shadow-md hover:bg-red-800 focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-300 font-bold">
+                        <i class="fa fa-trash"></i> <span class="hidden md:block">Delete</span>
                     </button>
                 @endif
             </div>
@@ -51,7 +51,7 @@
         </div>
     </x-slot>
 
-    <div class="md:py-6 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="md:py-6 max-w-7xl mx-auto space-y-6">
         <div class="bg-white dark:bg-gray-800 shadow-lg md:rounded-2xl p-3 md:p-8 border border-gray-200 dark:border-gray-700">
 
             <!-- Form Start -->
@@ -66,27 +66,30 @@
 
                 <!-- Image Preview Section -->
                 <div class="mb-8">
-                    <div id="image-display-carousel" class="flex overflow-x-auto space-x-4 pb-4 snap-x snap-mandatory">
-                        @php
+                    <div id="image-display-carousel"
+                         class="flex space-x-4 overflow-x-auto snap-x  w-full sm:w-auto snap-mandatory">
+
+                    @php
                             $initialImages = isset($listing) ? json_decode($listing->images, true) ?? [] : [];
                         @endphp
                         @foreach($initialImages as $image)
-                            <div class="relative">
+                            <div class="relative ">
                                 <img src="{{ asset($image) }}" alt="Listing Image"
-                                     class="h-96 w-96 object-cover rounded-xl shadow-md border dark:border-gray-700 snap-center transition-transform hover:scale-105">
-                                <button type="button" class="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full shadow-md delete-image-button" data-image="{{ $image }}">
-                                    ✕
+                                     class="min-w-96 min-h-96 object-cover rounded-xl shadow-md border dark:border-gray-700 snap-center transition-transform ">
+                                <button type="button" class="absolute top-2 right-2 bg-red-500 text-white p-2 px-3 rounded-full shadow-md delete-image-button" data-image="{{ $image }}">
+                                    <i class="fa fa-trash"></i>
                                 </button>
                             </div>
                         @endforeach
 
                         <!-- Placeholder for new image uploads -->
-                        <label for="images" class="flex items-center justify-center h-96 w-96 bg-gray-200 dark:bg-gray-700 rounded-xl cursor-pointer upload-image-button border border-dashed border-gray-400 dark:border-gray-600">
-                            <svg class="w-10 h-10 text-gray-500 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <label for="images" class="relative flex items-center justify-center min-h-96 min-w-96  bg-gray-200 dark:bg-gray-700 rounded-xl cursor-pointer border border-dashed border-gray-400 dark:border-gray-600">
+                            <svg class="w-12 h-12 text-gray-500 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
                             <input type="file" id="images" name="images[]" multiple class="hidden" accept="image/*" onchange="previewImages(event)">
                         </label>
+
                     </div>
                 </div>
                 <!-- Business Details -->
@@ -154,7 +157,7 @@
                                 <!-- Delete Button -->
                                 <button type="button" onclick="removeSection('{{ $sectionId }}', this)"
                                         class="absolute top-2 right-2 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-bold px-3 py-1 rounded-full bg-white/40 dark:bg-gray-800/40 shadow-md transition-all hover:scale-110">
-                                    ✕
+                                    <i class="fa fa-trash"></i>
                                 </button>
 
                                 <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Title</label>
@@ -173,7 +176,7 @@
 
                     <!-- Add Section Button -->
                     <button type="button" onclick="addSection()"
-                            class="mt-2 px-4 py-2 bg-blue-500/80 dark:bg-blue-600/80 hover:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-xl shadow-lg backdrop-blur-md transition-all duration-300 transform hover:scale-105">
+                            class="button-main">
                         + Add Section
                     </button>
                 </div>
@@ -193,8 +196,8 @@
         @if(isset($listing))
             <!-- Delete Button (Smaller, More Spaced) -->
             <button type="button" onclick="showDeleteModal()"
-                    class="px-5 py-3 bg-red-700 text-white rounded-lg shadow-md hover:bg-red-800 focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-300 font-bold">
-                Delete
+                    class="button-main">
+                <i class="fa fa-trash"></i> Delete
             </button>
         @endif
     </div>

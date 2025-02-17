@@ -26,7 +26,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -57,13 +57,6 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <p class="text-sm text-gray-600 dark:text-gray-300">
                 © {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.
-            </p>
-            <p class="text-xs text-gray-500 dark:text-gray-400">
-                Last Updated:
-                @php
-                    $lastUpdatedFile = storage_path('logs/last_updated.log');
-                    echo file_exists($lastUpdatedFile) ? file_get_contents($lastUpdatedFile) : 'Not Available';
-                @endphp
             </p>
         </div>
     </footer>

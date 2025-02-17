@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-6">
         <div class="w-full max-w-md bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8">
-            <div class="w-full justify-center items-center flex invert pb-5">
+            <div class="w-full justify-center items-center flex dark:invert pb-5">
                 <img src="/images/acqios_logo.png" alt="" class="w-12 h-12">
             </div>
             <!-- Header -->
