@@ -40,44 +40,44 @@
                 <input type="hidden" name="deleted_sections" id="deleted_sections" value="[]">
 
                 <!-- Image Preview Section -->
-                @if(isset($listing) && !empty($listing->images))
-                    @php
-                        $images = is_array($listing->images) ? $listing->images : json_decode($listing->images, true);
-                        $images = is_array($images) ? $images : [];
-                    @endphp
-                    <div class="mb-8">
-                        <div id="image-display-carousel" class="flex overflow-x-auto space-x-4 pb-4 snap-x snap-mandatory">
-                            @foreach($images as $image)
-                                @if(is_string($image) && !empty($image))
-                                    <div class="relative">
-                                        <img src="{{ asset($image) }}" alt="Listing Image"
-                                             class="h-96 w-full object-cover rounded-xl shadow-md border dark:border-gray-700 snap-center transition-transform">
-                                        <button type="button" class="absolute top-2 right-2 bg-red-500 text-white p-2 px-3 rounded-full shadow-md delete-image-button" data-image="{{ $image }}">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </div>
-                                @endif
-                            @endforeach
-                            <label for="images" class="relative flex items-center justify-center h-96 w-full bg-gray-100 dark:bg-gray-700 rounded-xl cursor-pointer border border-dashed border-gray-400 dark:border-gray-600">
-                                <svg class="w-12 h-12 text-gray-500 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                <input type="file" id="images" name="images[]" multiple class="hidden" accept="image/*" onchange="previewImages(event)">
-                            </label>
-                        </div>
+                <div class="mb-8">
+                    <div class="relative">
+                        @if(isset($listing) && !empty($listing->images))
+                            @php
+                                $images = is_array($listing->images) ? $listing->images : json_decode($listing->images, true);
+                                $images = is_array($images) ? $images : [];
+                            @endphp
+                            <div id="image-display-carousel" class="flex overflow-x-auto space-x-4 pb-4 snap-x snap-mandatory">
+                                @foreach($images as $image)
+                                    @if(is_string($image) && !empty($image))
+                                        <div class="relative flex-shrink-0">
+                                            <img src="{{ asset($image) }}" alt="Listing Image"
+                                                 class="w-96 aspect-square object-cover rounded-xl shadow-md border dark:border-gray-700 snap-center transition-transform">
+                                            <button type="button" class="absolute top-2 right-2 bg-red-500 text-white p-2 px-3 rounded-full shadow-md delete-image-button" data-image="{{ $image }}">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    @endif
+                                @endforeach
+                                <label for="images" class="w-96 aspect-square relative flex items-center justify-center flex-shrink-0 bg-gray-100 dark:bg-gray-700 rounded-xl cursor-pointer border border-dashed border-gray-400 dark:border-gray-600">
+                                    <svg class="w-12 h-12 text-gray-500 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    <input type="file" id="images" name="images[]" multiple class="hidden" accept="image/*" onchange="previewImages(event)">
+                                </label>
+                            </div>
+                        @else
+                            <div id="image-display-carousel" class="flex overflow-x-auto space-x-4 pb-4 snap-x snap-mandatory">
+                                <label for="images" class="w-96 aspect-square relative flex items-center justify-center flex-shrink-0 bg-gray-100 dark:bg-gray-700 rounded-xl cursor-pointer border border-dashed border-gray-400 dark:border-gray-600">
+                                    <svg class="w-12 h-12 text-gray-500 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    <input type="file" id="images" name="images[]" multiple class="hidden" accept="image/*" onchange="previewImages(event)">
+                                </label>
+                            </div>
+                        @endif
                     </div>
-                @else
-                    <div class="mb-8">
-                        <div id="image-display-carousel" class="flex overflow-x-auto space-x-4 pb-4 snap-x snap-mandatory">
-                            <label for="images" class="relative flex items-center justify-center h-96 w-full bg-gray-100 dark:bg-gray-700 rounded-xl cursor-pointer border border-dashed border-gray-400 dark:border-gray-600">
-                                <svg class="w-12 h-12 text-gray-500 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                <input type="file" id="images" name="images[]" multiple class="hidden" accept="image/*" onchange="previewImages(event)">
-                            </label>
-                        </div>
-                    </div>
-                @endif
+                </div>
 
                 <!-- Business Details -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -258,11 +258,11 @@
                     let reader = new FileReader();
                     reader.onload = function (e) {
                         let div = document.createElement("div");
-                        div.className = "relative";
+                        div.className = "relative flex-shrink-0";
 
                         let img = document.createElement("img");
                         img.src = e.target.result;
-                        img.className = "h-96 w-full object-cover rounded-xl shadow-md border dark:border-gray-700 snap-center transition-transform ";
+                        img.className = "w-96 aspect-square object-cover rounded-xl shadow-md border dark:border-gray-700 snap-center transition-transform";
                         div.appendChild(img);
 
                         let deleteButton = document.createElement("button");

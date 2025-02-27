@@ -54,7 +54,7 @@
                         @foreach($images as $image)
                             @if(is_string($image) && !empty($image))
                                 <img src="{{ asset($image) }}" alt="Listing Image"
-                                     class="h-96 w-full object-cover rounded-xl shadow-md border dark:border-gray-700 snap-center transition-transform aspect-w-16 aspect-h-9 relative">
+                                     class="w-96 aspect-square object-cover rounded-xl shadow-md border dark:border-gray-700 snap-center transition-transform aspect-w-16 aspect-h-9 relative">
                             @endif
                         @endforeach
                     </div>
