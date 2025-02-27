@@ -13,6 +13,5 @@
     class="button-main {{ $colorClasses }} {{ $additionalClasses }}"
     {{ $attributes->merge(['class' => '']) }}
 >
-    {{ $text }}
+    {!! $text !!}
 </button>
-

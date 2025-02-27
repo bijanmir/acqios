@@ -103,6 +103,22 @@
                 @endforeach
             </div>
 
+            <!-- Business Location Map -->
+            <div class="mb-8">
+                <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Business Location</h3>
+                <div class="p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 relative">
+                    <div id="map" class="w-full h-96 rounded-lg overflow-hidden"></div>
+                    @if($listing->location)
+                        <div class="mt-4 text-gray-600 dark:text-gray-300">
+                            <p><strong>Address:</strong> {{ $listing->location }}</p>
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($listing->location) }}" target="_blank" class="text-blue-600 hover:underline dark:text-blue-400">View larger map</a>
+                        </div>
+                    @else
+                        <p class="text-gray-600 dark:text-gray-300">Location not provided.</p>
+                    @endif
+                </div>
+            </div>
+
             <!-- Description Section -->
             <div class="mb-8">
                 <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Description</h3>
@@ -143,12 +159,8 @@
     <div class="fixed bottom-0 z-10 w-full bg-gray-50 dark:bg-gray-900 border-t dark:border-gray-800 md:hidden p-4">
         @auth
             @if(auth()->user()->id === $listing->user_id)
-                <a href="{{ route('listings.edit', $listing) }}"
-                   class="">
-                    <x-button
-                    text="Edit Listing"
-                    additionalClasses="w-full"
-                    />
+                <a href="{{ route('listings.edit', $listing) }}" class="">
+                    <x-button text="Edit Listing" additional-classes="w-full" />
                 </a>
             @else
                 <button onclick="openModal()"
@@ -168,7 +180,40 @@
     <!-- Include the Contact Modal Component -->
     <x-contact-modal :listing="$listing" />
 
+    <!-- Google Maps Script -->
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initMap" async defer></script>
     <script>
+        function initMap() {
+            @if($listing->location)
+            // Geocode the location to get coordinates
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ address: '{{ $listing->location }}' }, (results, status) => {
+                if (status === 'OK' && results[0]) {
+                    const map = new google.maps.Map(document.getElementById('map'), {
+                        center: results[0].geometry.location,
+                        zoom: 12,
+                        styles: [
+                            { featureType: "poi", elementType: "labels", stylers: [{ visibility: "off" }] }, // Hide points of interest
+                            { featureType: "road", elementType: "labels", stylers: [{ visibility: "off" }] }, // Hide road labels
+                        ],
+                        disableDefaultUI: true, // Hide default controls
+                    });
+
+                    new google.maps.Marker({
+                        position: results[0].geometry.location,
+                        map: map,
+                        title: '{{ $listing->title }}',
+                    });
+                } else {
+                    console.error('Geocode was not successful for the following reason: ' + status);
+                    document.getElementById('map').innerHTML = '<p class="text-gray-600 dark:text-gray-300">Unable to load map for this location.</p>';
+                }
+            });
+            @else
+            document.getElementById('map').innerHTML = '<p class="text-gray-600 dark:text-gray-300">No location data available.</p>';
+            @endif
+        }
+
         function openModal() {
             const modal = document.getElementById('contactModal');
             modal.classList.remove('hidden');
@@ -181,7 +226,6 @@
             setTimeout(() => modal.classList.add('hidden'), 200);
         }
 
-        // Close modal when clicking outside
         document.getElementById('contactModal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
         });

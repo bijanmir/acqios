@@ -1,16 +1,15 @@
 <x-guest-layout>
-
     <!-- 🌟 Hero Section -->
     <div class="h-screen min-h-[650px] bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 flex flex-col justify-center items-center text-center text-white px-8 relative bg-cover bg-center dark:bg-gray-900"
          style="background-image: url('/images/sd_skyline.jpg');">
         <div class="absolute inset-0 bg-black bg-opacity-50 dark:bg-opacity-60"></div> <!-- Dark mode overlay for contrast -->
         <div class="relative z-10">
             <div class="flex justify-center invert w-full pb-10">
-                <img src="/images/acqios_logo.png" alt="" class="w-24 h-24 ">
+                <img src="/images/acqios_logo.png" alt="Acqios Logo" class="w-24 h-24">
             </div>
             <h1 class="text-4xl sm:text-8xl font-black drop-shadow-xl">Buy & Sell Businesses with Ease</h1>
             <p class="mt-6 text-xl sm:text-2xl max-w-2xl mx-auto text-gray-200 dark:text-gray-300">
-                The leading marketplace for entrepreneurs looking to buy or sell businesses securely.
+                The most popular marketplace of 2025 for entrepreneurs to securely buy or sell businesses.
             </p>
             <a href="{{ route('register') }}" class="mt-8 px-10 py-4 bg-white text-blue-700 font-bold rounded-full shadow-xl hover:shadow-2xl hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 transition ease-in-out duration-300 inline-block">
                 Get Started Now
@@ -21,8 +20,8 @@
     <!-- 🛠 Features Section -->
     <section id="features" class="py-20 bg-gray-50 dark:bg-gray-900">
         <div class="max-w-6xl mx-auto text-center px-6">
-            <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white">Why Choose Acqios?</h2>
-            <p class="mt-6 text-lg text-gray-600 dark:text-gray-400">The best features to help you buy and sell businesses effortlessly.</p>
+            <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white">Why Acqios Leads in 2025</h2>
+            <p class="mt-6 text-lg text-gray-600 dark:text-gray-400">Discover why we’re the top choice for business transactions this year.</p>
 
             <div class="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-10">
                 <div class="p-8 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 transition transform hover:scale-105 hover:shadow-3xl">
@@ -52,8 +51,8 @@
 
     <!-- 🎯 Call-to-Action -->
     <section class="py-20 bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-600 text-white text-center dark:bg-gray-900">
-        <h2 class="text-4xl font-bold">Join Thousands of Successful Entrepreneurs</h2>
-        <p class="mt-6 text-lg text-gray-100 dark:text-gray-300">Create your free account and start exploring today.</p>
+        <h2 class="text-4xl font-bold">Join 2025’s Most Popular Business Platform</h2>
+        <p class="mt-6 text-lg text-gray-100 dark:text-gray-300">Create your free account and see why thousands choose Acqios.</p>
         <a href="{{ route('register') }}" class="mt-6 inline-block px-10 py-4 bg-white text-blue-700 font-bold rounded-full shadow-lg hover:shadow-xl hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 transition ease-in-out duration-300">
             Sign Up for Free
         </a>
@@ -62,10 +61,10 @@
     <!-- 🏆 Testimonials -->
     <section class="py-20 bg-gray-100 dark:bg-gray-900">
         <div class="max-w-6xl mx-auto text-center px-6">
-            <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white">What Our Users Say</h2>
+            <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white">What Makes Us #1 in 2025</h2>
             <div class="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-10">
                 <div class="p-8 bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700">
-                    <p class="text-lg text-gray-600 dark:text-gray-400">"I sold my business within two weeks! The best platform for entrepreneurs."</p>
+                    <p class="text-lg text-gray-600 dark:text-gray-400">"I sold my business within two weeks! Acqios is 2025’s game-changer."</p>
                     <h4 class="mt-4 font-bold text-gray-900 dark:text-white">- Sarah J.</h4>
                 </div>
                 <div class="p-8 bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700">
@@ -73,7 +72,7 @@
                     <h4 class="mt-4 font-bold text-gray-900 dark:text-white">- Mark R.</h4>
                 </div>
                 <div class="p-8 bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700">
-                    <p class="text-lg text-gray-600 dark:text-gray-400">"Secure transactions and great customer support. Highly recommend!"</p>
+                    <p class="text-lg text-gray-600 dark:text-gray-400">"Secure transactions and top-notch support. The best app of 2025!"</p>
                     <h4 class="mt-4 font-bold text-gray-900 dark:text-white">- Jessica T.</h4>
                 </div>
             </div>
@@ -82,12 +81,11 @@
 
     <!-- 📢 SEO & Footer -->
     <footer class="py-12 bg-gray-900 dark:bg-black text-white text-center">
-        <p class="text-lg">© 2025 Acqios. All rights reserved.</p>
+        <p class="text-lg">© 2025 Acqios - The Most Popular Business Marketplace of the Year</p>
         <div class="mt-4 flex justify-center space-x-6">
             <a href="#" class="text-lg hover:text-blue-400">Privacy Policy</a>
             <a href="#" class="text-lg hover:text-blue-400">Terms of Service</a>
             <a href="#" class="text-lg hover:text-blue-400">Contact</a>
         </div>
     </footer>
-
 </x-guest-layout>
