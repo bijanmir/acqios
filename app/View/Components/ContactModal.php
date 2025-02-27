@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class ListingCard extends Component
+class ContactModal extends Component
 {
     public $listing;
 
@@ -15,6 +15,6 @@ class ListingCard extends Component
 
     public function render()
     {
-        return view('components.listing-card');
+        return view('components.contact-modal');
     }
 }

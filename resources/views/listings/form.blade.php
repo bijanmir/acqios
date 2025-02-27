@@ -10,17 +10,20 @@
             <!-- Fixed Update Button for Desktop -->
             <div class="hidden md:flex items-center space-x-4">
                 <!-- Update Button -->
-                <button type="submit" form="listingForm"
-                        class="px-6 py-3 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 text-center font-bold">
-                    {{ isset($listing) ? 'Update Listing' : 'Create Listing' }}
-                </button>
+                <x-button
+                    text="{{ isset($listing) ? 'Update Listing' : 'Create Listing' }}"
+                    type="submit"
+                    form="listingForm"
+                />
 
                 @if(isset($listing))
                     <!-- Delete Button (Triggers Confirmation Modal) -->
-                    <button type="button" onclick="showDeleteModal()"
-                            class="flex items-center space-x-3 px-5 py-3 bg-red-700 text-white rounded-lg shadow-md hover:bg-red-800 focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-300 font-bold">
-                        <i class="fa fa-trash"></i> <span class="hidden md:block">Delete</span>
-                    </button>
+                <x-button
+                    text="Delete"
+                    color="red"
+                    onclick="showDeleteModal()"
+
+                />
                 @endif
             </div>
 
@@ -280,12 +283,10 @@
             ✕
         </button>
 
-        <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Title</label>
         <input type="text" name="sections[${uuid}][title]" placeholder="Section Title"
                class="w-full rounded-lg bg-white/20 dark:bg-gray-800/30 text-gray-900 dark:text-white p-3 border border-white/30 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 shadow-md transition-all backdrop-blur-lg"
                required>
 
-        <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mt-2">Description</label>
         <textarea name="sections[${uuid}][description]" placeholder="Section Description"
                   class="w-full rounded-lg bg-white/20 dark:bg-gray-800/30 text-gray-900 dark:text-white p-3 border border-white/30 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 shadow-md transition-all backdrop-blur-lg"
                   rows="3" required></textarea>

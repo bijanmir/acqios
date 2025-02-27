@@ -79,7 +79,6 @@ class ListingsController extends Controller
     }
 
 
-
     public function update(Request $request, Listing $listing)
     {
         $this->authorize('update', $listing);
@@ -97,9 +96,17 @@ class ListingsController extends Controller
             'sections.*.id' => 'sometimes|string',
             'sections.*.title' => 'required|string|max:255',
             'sections.*.description' => 'required|string|max:2000',
+            'category' => 'nullable|string|max:255',
+            'location' => 'nullable|string|max:255',
+            'price' => 'nullable|numeric',
+            'revenue' => 'nullable|numeric',
+            'profit' => 'nullable|numeric',
+            'contact_email' => 'nullable|string|max:255',
+            'phone_number' => 'nullable|string|max:255',
+            'website' => 'nullable|string|max:255',
         ]);
 
-        // ✅ **Handle Image Deletions**
+        // Handle Image Deletions
         if ($request->filled('delete_images')) {
             $deleteImages = json_decode($request->delete_images, true) ?? [];
             $existingImages = json_decode($listing->images, true) ?? [];
@@ -115,23 +122,23 @@ class ListingsController extends Controller
             $listing->update(['images' => empty($existingImages) ? null : json_encode(array_values($existingImages))]);
         }
 
-        // ✅ **Process New Image Uploads**
+        // Process New Image Uploads
         if ($request->hasFile('images')) {
             $images = json_decode($listing->images, true) ?? [];
-
             foreach ($request->file('images') as $image) {
                 $path = $image->store('listings', 'public');
                 $images[] = '/storage/' . $path;
             }
-
             $listing->update(['images' => json_encode($images)]);
         }
 
-        // ✅ **Handle Sections Properly**
+        // Handle Sections
         $existingSections = json_decode($listing->sections, true) ?? [];
         $existingSections = collect($existingSections)->keyBy('id')->toArray();
+        $submittedSections = $request->input('sections', []);
 
         Log::info('🔄 Existing Sections Before Changes:', ['sections' => $existingSections]);
+        Log::info('📤 Submitted Sections:', ['sections' => $submittedSections]);
 
         // Remove deleted sections
         if ($request->filled('deleted_sections')) {
@@ -141,29 +148,43 @@ class ListingsController extends Controller
             }
         }
 
-        // Remove empty sections (fixing issue where empty ones still get saved)
-        $existingSections = array_filter($existingSections, function ($section) {
-            return !empty($section['title']) || !empty($section['description']);
+        // Merge or update sections from the form
+        foreach ($submittedSections as $id => $sectionData) {
+            $existingSections[$id] = [
+                'id' => $id,
+                'title' => $sectionData['title'],
+                'description' => $sectionData['description'],
+            ];
+        }
+
+        // Remove empty sections and reindex
+        $updatedSections = array_filter($existingSections, function ($section) {
+            return !empty(trim($section['title'])) || !empty(trim($section['description']));
         });
 
-        // ✅ **Update Listing**
+        // Update the listing with all fields
         $listing->update([
             'title' => $validated['title'],
             'description' => $validated['description'],
-            'sections' => empty($existingSections) ? null : json_encode(array_values($existingSections)),
+            'sections' => empty($updatedSections) ? null : json_encode(array_values($updatedSections)),
+            'category' => $validated['category'] ?? $listing->category,
+            'location' => $validated['location'] ?? $listing->location,
+            'price' => $validated['price'] ?? $listing->price,
+            'revenue' => $validated['revenue'] ?? $listing->revenue,
+            'profit' => $validated['profit'] ?? $listing->profit,
+            'contact_email' => $validated['contact_email'] ?? $listing->contact_email,
+            'phone_number' => $validated['phone_number'] ?? $listing->phone_number,
+            'website' => $validated['website'] ?? $listing->website,
         ]);
 
-        Log::info('✅ Sections & Images Saved:', [
+        Log::info('✅ Updated Listing Data:', [
+            'listing' => $listing->toArray(),
             'sections' => json_decode($listing->sections, true),
             'images' => json_decode($listing->images, true),
         ]);
 
         return redirect()->route('listings.show', $listing)->with('success', 'Listing updated successfully!');
     }
-
-
-
-
 
 
     public function show($id)

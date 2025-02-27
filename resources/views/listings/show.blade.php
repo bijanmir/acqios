@@ -1,123 +1,48 @@
-<!-- Contact Modal (Hidden by Default) -->
-<div id="contactModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center hidden z-50">
-    <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg max-w-md w-full border border-gray-300 dark:border-gray-700">
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Confirm Message</h3>
-
-        <p class="text-gray-600 dark:text-gray-400 mb-6">
-            Are you sure you want to message the listing owner? They will receive a notification with your request.
-        </p>
-
-        <!-- Buttons -->
-        <div class="flex justify-center items-center gap-4 mt-4">
-            <!-- Cancel Button -->
-            <button onclick="closeModal()"
-                    class="px-4 py-2 w-24 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 focus:ring-2 focus:ring-gray-400 transition">
-                Cancel
-            </button>
-
-            <!-- Message Owner Form -->
-            <form action="{{ route('listings.contact', $listing) }}" method="POST" class="p-0 m-0">
-                @csrf
-                <button type="submit"
-                        class="px-4 py-2 w-24 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-green-400 transition">
-                    Message
-                </button>
-            </form>
-        </div>
-
-
-    </div>
-</div>
-
-<div class="fixed bottom-0 z-10 w-full bg-gray-50 dark:bg-gray-900 dark:border-gray-800 rounded-t-md border md:hidden">
-    <!-- Action Buttons -->
-    @auth
-        <div class="flex">
-            @if(auth()->user()->id === $listing->user_id)
-                <a href="{{ route('listings.edit', $listing) }}"
-                   class="button-main w-full text-center">
-                    Edit Listing
-                </a>
-            @else
-                <button onclick="openModal()" class="button-main w-full text-center">
-                    Message Owner
-                </button>
-            @endif
-        </div>
-
-    @else
-        <a href="{{ route('login') }}"
-           class="flex w-full justify-center items-center text-lg p-5 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300">
-            <span> Login to Contact</span> <i class="fa fa-arrow-right"></i>
-        </a>
-    @endauth
-</div>
-
-@php
-    $ogTitle = $listing->title;
-    $ogDescription = $listing->description ?? 'Check out this listing!';
-    $images = json_decode($listing->images, true) ?? [];
-    $ogImage = !empty($images) ? asset(reset($images)) : asset('default-preview.jpg');
-@endphp
 <x-app-layout
-    :ogTitle="$ogTitle"
-    :ogDescription="$ogDescription"
-    :ogImage="$ogImage"
+    :ogTitle="$listing->title"
+    :ogDescription="$listing->description ?? 'Check out this listing!'"
+    :ogImage="!empty($images = json_decode($listing->images, true)) ? asset(reset($images)) : asset('default-preview.jpg')"
 >
 
     <x-slot name="header">
-        <!-- Header Section: Title + Verified Badge + Buttons -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
-            <!-- Title & Verified Badge -->
-            <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-3 sm:justify-between w-full">
-
-                <div class="flex flex-col md:flex-row justify-center items-center space-y-2">
-                    <h2 class="text-2xl mx-2 text-center">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-3 w-full">
+                <div class="flex flex-col md:flex-row justify-center items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <h2 class="text-2xl text-center font-bold text-gray-900 dark:text-white">
                         {{ $listing->title }}
-
                     </h2>
                     @if($listing->is_verified)
-                        <div class="flex items-center bg-gray-100  dark:border-gray-500 dark:bg-gray-800 font-bold border bg-opacity-80 shadow-md dark:text-white px-2 rounded-full py-1 ">
-                            <img class="w-7 h-7 " src="/images/icons/icons8-verified-96.png" alt=""><span class="ml-1">Verified</span>
-                        </div>
+                        <span class="flex items-center bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 px-3 py-1 rounded-full shadow-sm">
+                            <img class="w-5 h-5 mr-1" src="/images/icons/icons8-verified-96.png" alt="Verified">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Verified</span>
+                        </span>
                     @endif
                 </div>
             </div>
 
-            <div class="hidden md:flex items-center">
-                <!-- Action Buttons -->
+            <div class="hidden md:flex items-center space-x-4">
                 @auth
-                    <div class="flex m-5 sm:m-0">
-                        @if(auth()->user()->id === $listing->user_id)
-                            <a href="{{ route('listings.edit', $listing) }}"
-                               class="px-4 py-2 whitespace-nowrap bg-sky-600 text-white rounded-lg shadow-md hover:bg-sky-700 focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition duration-300 text-center sm:w-auto w-full font-bold">
-                                Edit Listing
-                            </a>
-                        @else
-                            <button onclick="openModal()" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300 text-center sm:w-auto w-full">
-                                Message Owner
-                            </button>
-                        @endif
-                    </div>
-
+                    @if(auth()->user()->id === $listing->user_id)
+                        <a href="{{ route('listings.edit', $listing) }}">
+                            <x-button text="Edit Listing" href="{{ route('listings.edit', $listing) }}" />
+                        </a>
+                    @else
+                        <x-button text="Message Owner ✉️" onclick="openModal()" />
+                    @endif
                 @else
                     <a href="{{ route('login') }}"
-                       class="whitespace-nowrap flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 text-center sm:w-auto w-full">
-                       <span>Login to Contact</span> <i class="fa fa-arrow-right"></i>
+                       class="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200">
+                        <span>Login to Contact</span>
+                        <i class="fa fa-arrow-right"></i>
                     </a>
                 @endauth
             </div>
         </div>
     </x-slot>
 
-
-
-
     <!-- Main Content -->
-    <div class="md:py-6 max-w-7xl mx-auto  space-y-6">
-
+    <div class="md:py-6 max-w-7xl mx-auto space-y-6">
         <div class="bg-white dark:bg-gray-800 shadow-lg md:rounded-2xl p-3 md:p-8 border border-gray-200 dark:border-gray-700">
-
             <!-- Image Gallery -->
             @if(!empty($listing->images))
                 @php
@@ -147,6 +72,7 @@
                     </div>
                 @endforeach
             </div>
+
             <!-- Listing Details -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 @foreach (['price' => 'Price', 'revenue' => 'Revenue', 'profit' => 'Profit'] as $key => $label)
@@ -158,8 +84,6 @@
                     </div>
                 @endforeach
             </div>
-
-
 
             <!-- Contact Details -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -179,6 +103,16 @@
                 @endforeach
             </div>
 
+            <!-- Description Section -->
+            <div class="mb-8">
+                <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Description</h3>
+                <div class="p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                    <p class="text-gray-600 dark:text-gray-300">
+                        {{ $listing->description ?? 'No description provided.' }}
+                    </p>
+                </div>
+            </div>
+
             <!-- Business Sections -->
             <div class="mb-8">
                 @php
@@ -186,7 +120,6 @@
                 @endphp
                 @if (!empty($sections))
                     <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Business Sections</h3>
-
                     @foreach ($sections as $section)
                         <div class="mt-4 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
                             <h4 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ $section['title'] ?? 'Untitled Section' }}</h4>
@@ -199,22 +132,55 @@
             </div>
 
             <!-- Timestamps -->
-            <div class="text-sm text-gray-500 dark:text-gray-400 mt-6 flex justify-between p-2 ">
+            <div class="text-sm text-gray-500 dark:text-gray-400 mt-6 flex justify-between p-2">
                 <p>📅 Created: {{ $listing->created_at->format('M d, Y') }}</p>
                 <p>🕒 Updated: {{ $listing->updated_at->format('M d, Y') }}</p>
             </div>
         </div>
     </div>
 
+    <!-- Mobile Action Buttons -->
+    <div class="fixed bottom-0 z-10 w-full bg-gray-50 dark:bg-gray-900 border-t dark:border-gray-800 md:hidden p-4">
+        @auth
+            @if(auth()->user()->id === $listing->user_id)
+                <a href="{{ route('listings.edit', $listing) }}"
+                   class="block w-full text-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
+                    Edit Listing
+                </a>
+            @else
+                <button onclick="openModal()"
+                        class="block w-full text-center px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200">
+                    Message Owner
+                </button>
+            @endif
+        @else
+            <a href="{{ route('login') }}"
+               class="flex w-full justify-center items-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
+                <span>Login to Contact</span>
+                <i class="fa fa-arrow-right ml-2"></i>
+            </a>
+        @endauth
+    </div>
+
+    <!-- Include the Contact Modal Component -->
+    <x-contact-modal :listing="$listing" />
+
     <script>
         function openModal() {
-            document.getElementById('contactModal').classList.remove('hidden');
+            const modal = document.getElementById('contactModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.querySelector('div').classList.remove('scale-95'), 10);
         }
 
         function closeModal() {
-            document.getElementById('contactModal').classList.add('hidden');
+            const modal = document.getElementById('contactModal');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 200);
         }
+
+        // Close modal when clicking outside
+        document.getElementById('contactModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
     </script>
-
 </x-app-layout>
-
