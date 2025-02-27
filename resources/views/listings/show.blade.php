@@ -103,21 +103,7 @@
                 @endforeach
             </div>
 
-            <!-- Business Location Map -->
-            <div class="mb-8">
-                <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Business Location</h3>
-                <div class="p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 relative">
-                    <div id="map" class="w-full h-96 rounded-lg overflow-hidden"></div>
-                    @if($listing->location)
-                        <div class="mt-4 text-gray-600 dark:text-gray-300">
-                            <p><strong>Address:</strong> {{ $listing->location }}</p>
-                            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($listing->location) }}" target="_blank" class="text-blue-600 hover:underline dark:text-blue-400">View larger map</a>
-                        </div>
-                    @else
-                        <p class="text-gray-600 dark:text-gray-300">Location not provided.</p>
-                    @endif
-                </div>
-            </div>
+
 
             <!-- Description Section -->
             <div class="mb-8">
@@ -145,6 +131,22 @@
                 @else
                     <div id="no-sections"></div>
                 @endif
+            </div>
+
+            <!-- Business Location Map -->
+            <div class="mb-8">
+                <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Business Location</h3>
+                <div class="p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 relative">
+                    <div id="map" class="w-full h-96 rounded-lg overflow-hidden"></div>
+                    @if($listing->location)
+                        <div class="mt-4 text-gray-600 dark:text-gray-300">
+                            <p><strong>Address:</strong> {{ $listing->location }}</p>
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($listing->location) }}" target="_blank" class="text-blue-600 hover:underline dark:text-blue-400">View larger map</a>
+                        </div>
+                    @else
+                        <p class="text-gray-600 dark:text-gray-300">Location not provided.</p>
+                    @endif
+                </div>
             </div>
 
             <!-- Timestamps -->
