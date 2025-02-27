@@ -54,7 +54,7 @@
                         @foreach($images as $image)
                             @if(is_string($image) && !empty($image))
                                 <img src="{{ asset($image) }}" alt="Listing Image"
-                                     class="h-96 w-full object-cover rounded-xl shadow-md border dark:border-gray-700 snap-center transition-transform hover:scale-105 aspect-w-16 aspect-h-9 relative">
+                                     class="h-96 w-full object-cover rounded-xl shadow-md border dark:border-gray-700 snap-center transition-transform aspect-w-16 aspect-h-9 relative">
                             @endif
                         @endforeach
                     </div>
@@ -144,8 +144,11 @@
         @auth
             @if(auth()->user()->id === $listing->user_id)
                 <a href="{{ route('listings.edit', $listing) }}"
-                   class="block w-full text-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
-                    Edit Listing
+                   class="">
+                    <x-button
+                    text="Edit Listing"
+                    additionalClasses="w-full"
+                    />
                 </a>
             @else
                 <button onclick="openModal()"
