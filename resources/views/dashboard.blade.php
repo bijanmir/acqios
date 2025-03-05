@@ -7,7 +7,7 @@
             <!-- Header with Action Button -->
             <div class="flex flex-col sm:flex-row sm:justify-between items-center">
                 <a href="{{ route('listings.create') }}"
-                   class="button-main">
+                   class="button-main bg-black dark:bg-gray- dark:text-black">
                     <span>Create Listing</span>
                     <span class="invert">➕</span>
                 </a>

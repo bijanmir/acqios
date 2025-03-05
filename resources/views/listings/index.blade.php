@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <!-- Glassmorphic Search Bar & Filters -->
-        <form id="searchForm" action="{{ route('listings.index') }}" method="GET" class="relative bg-white/20 dark:bg-gray-900/20 rounded-b-lg shadow-xl transition-all duration-300">
+        <form id="searchForm" action="{{ route('listings.index') }}" method="GET" class="relative  transition-all duration-300">
             <!-- 🔍 Search Input + Buttons -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 p-4">
                 <div class="relative flex-grow">
