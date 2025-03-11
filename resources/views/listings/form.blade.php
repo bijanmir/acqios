@@ -11,7 +11,7 @@
 
             <div class="hidden md:flex items-center space-x-4">
                 <x-button
-                    text="{{ isset($listing) ? 'Update Listing' : 'Create Listing' }}"
+                    text="{{ isset($listing) ? 'Update Listing' : 'Save' }}"
                     type="submit"
                     form="listingForm"
                     color="green"

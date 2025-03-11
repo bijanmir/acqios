@@ -24,7 +24,7 @@
                 @auth
                     @if(auth()->user()->id === $listing->user_id)
                         <a href="{{ route('listings.edit', $listing) }}">
-                            <x-button text="Edit Listing" href="{{ route('listings.edit', $listing) }}" />
+                            <x-button color="red" text="Edit Listing" href="{{ route('listings.edit', $listing) }}" />
                         </a>
                     @else
                         <x-button text="Message Owner ✉️" onclick="openModal()" />
@@ -63,7 +63,7 @@
 
             <!-- Business Details -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                @foreach (['category' => 'Category', 'location' => 'Location'] as $key => $label)
+                @foreach (['title' => 'Company Name','category' => 'Category', 'location' => 'Location'] as $key => $label)
                     <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
                         <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">{{ $label }}</label>
                         <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">
