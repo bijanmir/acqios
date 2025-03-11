@@ -3,7 +3,7 @@
         <!-- Glassmorphic Search Bar & Filters -->
         <form id="searchForm" action="{{ route('listings.index') }}" method="GET" class="relative  transition-all duration-300">
             <!-- 🔍 Search Input + Buttons -->
-            <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 p-4">
+            <div class="flex items-center space-x-4">
                 <div class="relative flex-grow">
                     <input type="text" name="search" id="searchInput"
                            value="{{ request('search') }}" autocomplete="off"
@@ -24,7 +24,7 @@
 
             <!-- ❌ Clear Filters Button -->
             @if(request()->hasAny(['search', 'category', 'min_price', 'max_price', 'sort']))
-                <div class="flex justify-center pb-4">
+                <div class="flex justify-center py-4">
                     <a href="{{ route('listings.index') }}" class="inline-flex items-center space-x-2">
                         <x-button text="Clear Filters" color="red" additional-classes="flex items-center space-x-2">
                             <span slot="prepend">❌</span>
