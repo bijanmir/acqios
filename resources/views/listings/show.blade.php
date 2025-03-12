@@ -183,7 +183,8 @@
     <x-contact-modal :listing="$listing" />
 
     <!-- Google Maps Script -->
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initMap" async defer></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.key') }}&libraries=places,marker&callback=initMap"></script>
+
     <script>
         function initMap() {
             @if($listing->location)
@@ -206,6 +207,7 @@
                         map: map,
                         title: '{{ $listing->title }}',
                     });
+
                 } else {
                     console.error('Geocode was not successful for the following reason: ' + status);
                     document.getElementById('map').innerHTML = '<p class="text-gray-600 dark:text-gray-300">Unable to load map for this location.</p>';
@@ -228,8 +230,9 @@
             setTimeout(() => modal.classList.add('hidden'), 200);
         }
 
-        document.getElementById('contactModal').addEventListener('click', function(e) {
+        document.getElementById('contactModal')?.addEventListener('click', function(e) {
             if (e.target === this) closeModal();
         });
     </script>
+
 </x-app-layout>
