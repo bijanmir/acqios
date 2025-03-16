@@ -148,9 +148,11 @@
                     @endif
                 </div>
             </div>
-
             <!-- Timestamps -->
             <div class="text-sm text-gray-500 dark:text-gray-400 mt-6 flex justify-between p-2">
+                <p class="text-gray-500 dark:text-gray-300">
+                    👀 Viewed <strong>{{ $listing->views }}</strong> times
+                </p>
                 <p>📅 Created: {{ $listing->created_at->format('M d, Y') }}</p>
                 <p>🕒 Updated: {{ $listing->updated_at->format('M d, Y') }}</p>
             </div>

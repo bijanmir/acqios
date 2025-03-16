@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
+use App\Models\ListingView;
 
 class ListingsController extends Controller
 {
@@ -187,11 +188,30 @@ class ListingsController extends Controller
     }
 
 
-    public function show($id)
+    public function show($id, Request $request)
     {
-        $listing = Listing::findOrFail($id); // Fetch the listing by ID
-        return view('listings.show', compact('listing')); // Pass the listing to the view
+        $listing = Listing::findOrFail($id);
+        $userIp = $request->ip(); // Get visitor's IP address
+
+        // Check if the IP has already been recorded for this listing
+        $existingView = ListingView::where('listing_id', $listing->id)
+            ->where('ip_address', $userIp)
+            ->exists();
+
+        if (!$existingView) {
+            // Record the new view
+            ListingView::create([
+                'listing_id' => $listing->id,
+                'ip_address' => $userIp,
+            ]);
+
+            // Increment the views count in listings table
+            $listing->increment('views');
+        }
+
+        return view('listings.show', compact('listing'));
     }
+
 
     public function edit(Listing $listing)
     {
