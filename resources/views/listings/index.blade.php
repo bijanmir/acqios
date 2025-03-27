@@ -94,20 +94,20 @@
         });
 
         // Debounced search submission
-        let searchTimeout;
-        const searchInput = document.getElementById("searchInput");
-        searchInput.addEventListener("input", () => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                document.getElementById("searchForm").submit();
-            }, 500); // 500ms debounce
-        });
+        // let searchTimeout;
+        // const searchInput = document.getElementById("searchInput");
+        // searchInput.addEventListener("input", () => {
+        //     clearTimeout(searchTimeout);
+        //     searchTimeout = setTimeout(() => {
+        //         document.getElementById("searchForm").submit();
+        //     }, 500); // 500ms debounce
+        // });
 
         // Auto-submit on filter change
-        document.querySelectorAll("#categoryFilter, #sortFilter, #minPrice, #maxPrice").forEach(filter => {
-            filter.addEventListener("change", () => {
-                document.getElementById("searchForm").submit();
-            });
-        });
+        // document.querySelectorAll("#categoryFilter, #sortFilter, #minPrice, #maxPrice").forEach(filter => {
+        //     filter.addEventListener("change", () => {
+        //         document.getElementById("searchForm").submit();
+        //     });
+        // });
     </script>
 </x-app-layout>

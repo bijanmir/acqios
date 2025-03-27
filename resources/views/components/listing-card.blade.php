@@ -4,7 +4,7 @@
         <!-- Verified Badge -->
         @if($listing->is_verified)
             <span class="absolute top-3 right-3 bg-gray-100/80 text-gray-700 text-xs font-medium px-3 py-1 rounded-full shadow-md dark:bg-gray-800/80 dark:text-gray-300 flex items-center">
-<img width="48" height="48" src="https://img.icons8.com/emoji/48/check-mark-emoji.png" alt="check-mark-emoji"/>                Verified
+<img class="w-4 h-4 mr-2" src="https://img.icons8.com/emoji/48/check-mark-emoji.png" alt="check-mark-emoji"/>                Verified
             </span>
         @endif
 

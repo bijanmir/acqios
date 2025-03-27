@@ -8,12 +8,12 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
             <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-3 w-full">
                 <div class="flex flex-col md:flex-row justify-center items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <h2 class="text-2xl text-center font-bold text-gray-900 dark:text-white">
+                    <h2 class="text-3xl text-center font-bold text-gray-900 dark:text-white">
                         {{ $listing->title }}
                     </h2>
                     @if($listing->is_verified)
                         <span class="flex items-center bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 px-3 py-1 rounded-full shadow-sm">
-                            <img class="w-5 h-5 mr-1" src="/images/icons/icons8-verified-96.png" alt="Verified">
+                            <img class="w-4 h-4 mr-2" src="https://img.icons8.com/emoji/48/check-mark-emoji.png" alt="check-mark-emoji"/>
                             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Verified</span>
                         </span>
                     @endif
