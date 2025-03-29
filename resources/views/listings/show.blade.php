@@ -117,18 +117,71 @@
                 @foreach (['contact_email' => 'Contact Email', 'phone_number' => 'Phone Number', 'website' => 'Website'] as $key => $label)
                     <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
                         <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">{{ $label }}</label>
-                        <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                            @if($key === 'website' && $listing->$key)
-                                <a href="{{ $listing->$key }}" class="text-blue-600 hover:underline dark:text-blue-400" target="_blank">
-                                    {{ $listing->$key }}
+
+                        @if(auth()->check() && (auth()->user()->id === $listing->user_id || auth()->user()->isPremium()))
+                            <!-- User is either the owner or a premium user - show actual contact details -->
+                            <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                                @if($key === 'website' && $listing->$key)
+                                    <a href="{{ $listing->$key }}" class="text-blue-600 hover:underline dark:text-blue-400" target="_blank">
+                                        {{ $listing->$key }}
+                                    </a>
+                                @else
+                                    {{ $listing->$key ?? 'N/A' }}
+                                @endif
+                            </p>
+                        @elseif(auth()->check())
+                            <!-- User is logged in but not premium or the owner -->
+                            <div class="flex flex-col space-y-2">
+                                <p class="text-gray-500 dark:text-gray-400 italic">
+                        <span class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            Upgrade to premium to view
+                        </span>
+                                </p>
+                                <a href="{{ route('premium.upgrade') }}" class="text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium">
+                                    Upgrade Now →
                                 </a>
-                            @else
-                                {{ $listing->$key ?? 'N/A' }}
-                            @endif
-                        </p>
+                            </div>
+                        @else
+                            <!-- User is not logged in -->
+                            <div class="flex flex-col space-y-2">
+                                <p class="text-gray-500 dark:text-gray-400 italic">
+                        <span class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            Login to view contact details
+                        </span>
+                                </p>
+                                <a href="{{ route('login') }}" class="text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium">
+                                    Login Now →
+                                </a>
+                            </div>
+                        @endif
                     </div>
                 @endforeach
             </div>
+
+            <!-- Add a Premium Banner -->
+            @auth
+                @if(!auth()->user()->isPremium() && auth()->user()->id !== $listing->user_id)
+                    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6 rounded-xl shadow-lg mb-8 border border-indigo-600">
+                        <div class="flex flex-col md:flex-row items-center justify-between">
+                            <div class="flex-1 mb-4 md:mb-0">
+                                <h3 class="text-xl font-bold mb-2">✨ Unlock Premium Benefits</h3>
+                                <p class="text-indigo-100">Get full access to contact details, advanced analytics, and premium listings.</p>
+                            </div>
+                            <div>
+                                <a href="{{ route('premium.upgrade') }}" class="inline-block bg-white text-indigo-600 hover:bg-indigo-50 font-medium px-6 py-3 rounded-lg transition-colors duration-200">
+                                    Upgrade to Premium
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            @endauth
 
 
 

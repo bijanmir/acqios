@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ListingsController;
+use App\Http\Controllers\PremiumController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Listing;
@@ -52,8 +53,13 @@ Route::get('auth/google/callback', [GoogleAuthController::class, 'callback']);
 
 Route::middleware('auth')->post('/listings/{listing}/favorite', [ListingsController::class, 'toggleFavorite'])->name('listings.toggleFavorite');
 
-
-
+// Premium subscription routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/premium/upgrade', [PremiumController::class, 'showUpgradePage'])->name('premium.upgrade');
+    Route::post('/premium/subscribe', [PremiumController::class, 'processSubscription'])->name('premium.subscribe');
+    Route::get('/premium/success', [PremiumController::class, 'showSuccess'])->name('premium.success');
+    Route::post('/premium/cancel', [PremiumController::class, 'cancelSubscription'])->name('premium.cancel');
+});
 
 
 require __DIR__.'/auth.php';
