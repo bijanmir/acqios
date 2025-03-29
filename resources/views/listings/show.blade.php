@@ -77,14 +77,52 @@
                     $images = is_array($images) ? $images : [];
                 @endphp
                 <div class="mb-8">
-                    <div class="flex overflow-x-auto space-x-4 pb-4 snap-x snap-mandatory">
+                    @if(count($images) == 1)
+                        <!-- Single Image Display - Centered -->
                         @foreach($images as $image)
                             @if(is_string($image) && !empty($image))
-                                <img src="{{ asset($image) }}" alt="Listing Image"
-                                     class="w-96 aspect-square object-cover rounded-xl shadow-md border dark:border-gray-700 snap-center transition-transform aspect-w-16 aspect-h-9 relative">
+                                <div class="flex justify-center">
+                                    <div class="w-full max-w-3xl rounded-xl overflow-hidden shadow-lg">
+                                        <img src="{{ asset($image) }}"
+                                             alt="Listing Image"
+                                             class="w-full aspect-square object-cover">
+                                    </div>
+                                </div>
                             @endif
                         @endforeach
-                    </div>
+                    @else
+                        <!-- Multiple Images Gallery - Carousel -->
+                        <div class="relative">
+                            <div class="flex justify-center">
+                                <div class="w-full max-w-4xl overflow-hidden">
+                                    <div class="flex snap-x snap-mandatory overflow-x-auto scrollbar-hide pb-4">
+                                        @foreach($images as $image)
+                                            @if(is_string($image) && !empty($image))
+                                                <div class="snap-center min-w-full flex justify-center px-2">
+                                                    <div class="w-full max-w-3xl rounded-xl overflow-hidden shadow-lg">
+                                                        <img src="{{ asset($image) }}"
+                                                             alt="Listing Image"
+                                                             class="w-full aspect-square object-cover">
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    </div>
+
+                                    @if(count($images) > 1)
+                                        <!-- Optional: Navigation dots -->
+                                        <div class="flex justify-center mt-4 space-x-2">
+                                            @foreach($images as $index => $image)
+                                                @if(is_string($image) && !empty($image))
+                                                    <span class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             @endif
 
