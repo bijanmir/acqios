@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\ContactOwnerMail;
 use App\Models\Listing;
+use App\Models\ListingInquiry;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -303,21 +304,45 @@ class ListingsController extends Controller
     {
         $sender = auth()->user();
 
-        Log::info("The email is {$listing->user->email} !");
-
-
-
         if (!$sender) {
             return back()->with('error', 'You must be logged in to send a message.');
         }
 
+        $request->validate([
+            'message' => 'required|string|max:2000',
+        ]);
+
         try {
-            Mail::to($listing->user->email)->send(new ContactOwnerMail($listing, $sender));
+            // Send the email
+            Mail::to($listing->user->email)->send(new ContactOwnerMail($listing, $sender, $request->message));
+
+            // Log the inquiry in the database
+            ListingInquiry::create([
+                'user_id' => $sender->id,
+                'listing_id' => $listing->id,
+                'message' => $request->message,
+            ]);
+
             return back()->with('success', 'Your message has been sent to the listing owner.');
         } catch (\Exception $e) {
             Log::error('Email sending failed: ' . $e->getMessage());
             return back()->with('error', 'There was an error sending your message. Please try again.');
         }
     }
+
+
+    public function toggleFavorite(Request $request, Listing $listing)
+    {
+        $user = auth()->user();
+
+        if ($user->id === $listing->user_id) {
+            return back()->with('error', "You can't favorite your own listing.");
+        }
+
+        $user->savedListings()->toggle($listing->id);
+
+        return back()->with('success', 'Favorite status updated.');
+    }
+
 
 }

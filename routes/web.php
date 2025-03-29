@@ -50,6 +50,7 @@ Route::post('/listings/{listing}/contact', [ListingsController::class, 'contactO
 Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google.login');
 Route::get('auth/google/callback', [GoogleAuthController::class, 'callback']);
 
+Route::middleware('auth')->post('/listings/{listing}/favorite', [ListingsController::class, 'toggleFavorite'])->name('listings.toggleFavorite');
 
 
 

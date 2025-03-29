@@ -23,18 +23,45 @@
             <div class="hidden md:flex items-center space-x-4">
                 @auth
                     @if(auth()->user()->id === $listing->user_id)
+                        <!-- Edit Button for Listing Owner -->
                         <a href="{{ route('listings.edit', $listing) }}">
-                            <x-button color="red" text="Edit Listing" href="{{ route('listings.edit', $listing) }}" />
+                            <x-button text="Edit Listing ✏️" color="indigo" />
                         </a>
                     @else
-                        <x-button text="Message Owner ✉️" onclick="openModal()" />
+                        <!-- Message Owner Button -->
+                        <x-button text="Message Owner  ✉️" onclick="openModal()" color="indigo" />
+
+                        <!-- Favorite/Unfavorite Button -->
+                        <form method="POST" action="{{ route('listings.toggleFavorite', $listing->id) }}">
+                            @csrf
+                            @php
+                                $isFavorited = auth()->user()->savedListings->contains($listing->id);
+                            @endphp
+                            <x-button
+                                type="submit"
+                                color="{{ $isFavorited ? 'green' : 'blue' }}"
+                                text="{{ $isFavorited ? 'Saved 🔒' : 'Save Listing  🔓' }}"
+                                icon="{{ $isFavorited ? 'fa-heart' : 'fa-heart-o' }}"
+                            />
+                        </form>
                     @endif
                 @else
-                    <a href="{{ route('login') }}"
-                       class="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200">
-                        <span>Login to Contact</span>
-                        <i class="fa fa-arrow-right"></i>
-                    </a>
+                    <!-- Login to Contact Button -->
+                    <x-button
+                        href="{{ route('login') }}"
+                        color="indigo"
+                        text="Login to Contact"
+                        icon="fa-arrow-right"
+                        iconPosition="right"
+                    />
+
+                    <!-- Login to Save Button -->
+                    <x-button
+                        href="{{ route('login') }}"
+                        color="gray"
+                        text="Login to Save"
+                        icon="fa-heart"
+                    />
                 @endauth
             </div>
         </div>

@@ -45,5 +45,15 @@ class User extends Authenticatable
         return $this->hasMany(Listing::class);
     }
 
+    public function savedListings()
+    {
+        return $this->belongsToMany(Listing::class, 'listing_saves')->withTimestamps();
+    }
+
+    public function listingInquiries()
+    {
+        return $this->hasMany(ListingInquiry::class);
+    }
+
 
 }

@@ -97,4 +97,16 @@ class Listing extends Model
     {
         return $this->hasOne(Address::class);
     }
+
+    public function savedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'listing_saves')->withTimestamps();
+    }
+
+    public function inquiries()
+    {
+        return $this->hasMany(ListingInquiry::class);
+    }
+
+
 }
