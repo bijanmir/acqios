@@ -61,5 +61,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/premium/cancel', [PremiumController::class, 'cancelSubscription'])->name('premium.cancel');
 });
 
+Route::post('/listings/{listing}/quick-update', [ListingsController::class, 'quickUpdate'])->name('listings.quick-update');
 
 require __DIR__.'/auth.php';

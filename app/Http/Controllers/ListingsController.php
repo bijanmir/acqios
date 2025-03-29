@@ -254,16 +254,42 @@ class ListingsController extends Controller
     {
         $query = Listing::query();
 
-        // 🔍 Search Query
+        // 🔍 Search Query - Improve to handle multiple search terms
         if ($request->filled('search')) {
-            $query->where('title', 'LIKE', '%' . $request->search . '%')
-                ->orWhere('description', 'LIKE', '%' . $request->search . '%')
-                ->orWhere('location', 'LIKE', '%' . $request->search . '%');
+            $searchTerms = explode(' ', $request->search);
+            $query->where(function($q) use ($searchTerms) {
+                foreach ($searchTerms as $term) {
+                    $q->where(function($subQuery) use ($term) {
+                        $subQuery->where('title', 'LIKE', '%' . $term . '%')
+                            ->orWhere('description', 'LIKE', '%' . $term . '%')
+                            ->orWhere('location', 'LIKE', '%' . $term . '%')
+                            ->orWhere('category', 'LIKE', '%' . $term . '%');
+                    });
+                }
+            });
         }
 
         // 🏷️ Filter by Category
         if ($request->filled('category')) {
             $query->where('category', $request->category);
+        }
+
+        // ✅ Filter by Verified Status
+        if ($request->filled('verified')) {
+            $query->where('is_verified', true);
+        }
+
+        // 📷 Filter listings with images
+        if ($request->filled('with_images')) {
+            $query->whereNotNull('images')
+                ->where('images', '!=', '[]')
+                ->where('images', '!=', '');
+        }
+
+        // 🌐 Filter listings with website
+        if ($request->filled('has_website')) {
+            $query->whereNotNull('website')
+                ->where('website', '!=', '');
         }
 
         // 💰 Filter by Price Range
@@ -274,7 +300,13 @@ class ListingsController extends Controller
             $query->where('price', '<=', $request->max_price);
         }
 
-        switch ($request->sort) {
+        // ⭐ Handle premium listings first
+        if (auth()->check() && auth()->user()->isPremium()) {
+            $query->orderByRaw('is_featured DESC');
+        }
+
+        // 🔄 Sorting options
+        switch ($request->input('sort', 'latest')) {
             case 'latest':
                 $query->orderBy('created_at', 'desc');
                 break;
@@ -287,18 +319,20 @@ class ListingsController extends Controller
             case 'price_high':
                 $query->orderBy('price', 'desc');
                 break;
-            default:
-                $query->orderBy('created_at', 'desc');
+            case 'views':
+                $query->orderBy('views', 'desc');
                 break;
         }
 
-        // Fetch Listings
-        $listings = $query->latest()->get();
-        $categories = Listing::distinct()->pluck('category');
+        // 📊 Paginate results and get stats
+        $listings = $query->paginate(12)->withQueryString();
+        $listingsCount = $listings->total();
 
-        return view('listings.index', compact('listings', 'categories'));
+        // Get unique categories for filter dropdown
+        $categories = Listing::distinct()->pluck('category')->filter()->sort();
+
+        return view('listings.index', compact('listings', 'categories', 'listingsCount'));
     }
-
 
     public function contactOwner(Request $request, Listing $listing): \Illuminate\Http\RedirectResponse
     {
@@ -342,6 +376,27 @@ class ListingsController extends Controller
         $user->savedListings()->toggle($listing->id);
 
         return back()->with('success', 'Favorite status updated.');
+    }
+
+    public function quickUpdate(Request $request, Listing $listing)
+    {
+        // Verify ownership
+        if ($request->user()->id !== $listing->user_id) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $field = $request->input('field');
+        $value = $request->input('value');
+
+        // Only allow specific fields to be updated
+        if (in_array($field, ['title', 'category', 'location'])) {
+            $listing->$field = $value;
+            $listing->save();
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Invalid field'], 400);
     }
 
 
