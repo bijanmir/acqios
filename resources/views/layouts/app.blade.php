@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description" content="Acqios is the best online marketplace to buy or list a business for sale. Discover verified listings, attract serious buyers, and close deals faster." />
 
     <!-- Open Graph Meta Tags for Social Media Previews -->
     <meta property="og:title" content="{{ $ogTitle ?? config('app.name', 'Laravel') }}">
@@ -21,7 +22,7 @@
     <meta name="twitter:image" content="{{ $ogImage ?? asset('default-preview.jpg') }}">
 
     <!-- Ensure the Title Updates -->
-    <title>{{ $ogTitle ?? config('app.name', 'Laravel') }}</title>
+    <title>@yield('title', $ogTitle ?? config('app.name', 'Laravel'))</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">

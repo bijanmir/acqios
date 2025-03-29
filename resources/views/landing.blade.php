@@ -1,3 +1,5 @@
+@section('title', 'List a Business for Sale Online | Acqios Marketplace for Buying & Selling Businesses')
+
 <x-guest-layout>
     <!-- 🌟 Hero Section -->
     <div class="h-screen min-h-[650px] bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 flex flex-col justify-center items-center text-center text-white px-8 relative bg-cover bg-center dark:bg-gray-900"
