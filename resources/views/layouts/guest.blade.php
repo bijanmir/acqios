@@ -135,7 +135,7 @@
     <!-- Simple Footer for Guest Pages -->
     <footer class="py-4 text-center text-sm text-gray-500 dark:text-gray-400">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="flex w-full justify-center">
                 <div class="mb-0">
                     &copy; {{ date('Y') }} Acqios. All rights reserved.
                 </div>

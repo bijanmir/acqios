@@ -301,7 +301,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
                 <!-- Company Info -->
                 <div class="col-span-1 md:col-span-1">
-                    <img src="/images/acqios_logo_white.png" alt="Acqios Logo" class="h-10 mb-4">
+                    <img src="/images/acqios_logo.png" alt="Acqios Logo" class="h-10 mb-4 invert">
                     <p class="text-gray-400 mb-6">The trusted marketplace for entrepreneurs to buy and sell businesses.</p>
                     <div class="flex space-x-4">
                         <a href="#" class="text-gray-400 hover:text-white">

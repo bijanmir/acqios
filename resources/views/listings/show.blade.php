@@ -87,20 +87,18 @@
                 @endphp
                 <div class="mb-8">
                     @if(count($images) == 1)
-                        <!-- Single Image Display - Centered -->
                         @foreach($images as $image)
                             @if(is_string($image) && !empty($image))
                                 <div class="flex justify-center">
                                     <div class="w-full max-w-3xl rounded-xl overflow-hidden shadow-lg">
                                         <img src="{{ asset($image) }}"
                                              alt="Listing Image"
-                                             class="w-full aspect-square object-cover">
+                                             class="w-full max-h-96 object-cover">
                                     </div>
                                 </div>
                             @endif
                         @endforeach
                     @else
-                        <!-- Multiple Images Gallery - Carousel -->
                         <div class="relative">
                             <div class="flex justify-center">
                                 <div class="w-full max-w-4xl overflow-hidden">
@@ -111,7 +109,7 @@
                                                     <div class="w-full max-w-3xl rounded-xl overflow-hidden shadow-lg">
                                                         <img src="{{ asset($image) }}"
                                                              alt="Listing Image"
-                                                             class="w-full aspect-square object-cover">
+                                                             class="w-full max-h-96 object-cover">
                                                     </div>
                                                 </div>
                                             @endif
@@ -119,7 +117,6 @@
                                     </div>
 
                                     @if(count($images) > 1)
-                                        <!-- Navigation dots -->
                                         <div class="flex justify-center mt-4 space-x-2">
                                             @foreach($images as $index => $image)
                                                 @if(is_string($image) && !empty($image))
