@@ -47,7 +47,7 @@
                                         @endif
 
                                         <div class="mt-3 flex space-x-3">
-                                            <a href="#" class="text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium">
+                                            <a href="{{route('premium.upgrade')}}" class="text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium">
                                                 View Benefits
                                             </a>
                                             @if(auth()->user()->premium_expires_at)

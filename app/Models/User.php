@@ -108,6 +108,8 @@ class User extends Authenticatable
      */
     public function cancelPremium(bool $immediately = false): void
     {
+        // Immediately delete the account
+        $immediately = true;
         if ($immediately) {
             $this->is_premium = false;
             $this->premium_expires_at = null;
