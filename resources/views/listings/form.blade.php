@@ -126,7 +126,7 @@
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <span class="text-gray-500 dark:text-gray-400 sm:text-sm">$</span>
                                     </div>
-                                    <input type="number" step="0.01" name="{{ $key }}" id="{{ $key }}"
+                                    <input inputmode="numeric" type="number" step="0.01" name="{{ $key }}" id="{{ $key }}"
                                            class="pl-7 w-full rounded-lg bg-white dark:bg-gray-800 p-2 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 dark:text-gray-100"
                                            value="{{ old($key, $listing->$key ?? '') }}">
                                 </div>

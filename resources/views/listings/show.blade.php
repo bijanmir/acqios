@@ -90,7 +90,7 @@
                         @foreach($images as $image)
                             @if(is_string($image) && !empty($image))
                                 <div class="flex justify-center">
-                                    <div class="w-full max-w-3xl rounded-xl overflow-hidden shadow-lg">
+                                    <div class="w-full rounded-xl overflow-hidden shadow-lg">
                                         <img src="{{ asset($image) }}"
                                              alt="Listing Image"
                                              class="w-full max-h-96 object-cover">
@@ -101,12 +101,12 @@
                     @else
                         <div class="relative">
                             <div class="flex justify-center">
-                                <div class="w-full max-w-4xl overflow-hidden">
+                                <div class="w-full  overflow-hidden">
                                     <div class="flex snap-x snap-mandatory overflow-x-auto scrollbar-hide pb-4">
                                         @foreach($images as $image)
                                             @if(is_string($image) && !empty($image))
                                                 <div class="snap-center min-w-full flex justify-center px-2">
-                                                    <div class="w-full max-w-3xl rounded-xl overflow-hidden shadow-lg">
+                                                    <div class="w-full  rounded-xl overflow-hidden shadow-lg">
                                                         <img src="{{ asset($image) }}"
                                                              alt="Listing Image"
                                                              class="w-full max-h-96 object-cover">
