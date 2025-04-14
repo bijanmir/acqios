@@ -47,6 +47,7 @@
                 <!-- Registration Form -->
                 <form method="POST" action="{{ route('register') }}" class="space-y-5">
                     @csrf
+                    <input type="text" name="website" style="display:none">
 
                     <!-- Name -->
                     <div>
